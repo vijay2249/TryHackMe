@@ -1,0 +1,7 @@
+export IP=<ip>
+
+search for sql injection possibilities - search for input validations where it is being done
+
+install seclist for enum/recon phase to gather infomation - sudo apt-get install seclists
+
+

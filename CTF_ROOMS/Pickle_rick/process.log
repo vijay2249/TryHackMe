@@ -1,0 +1,51 @@
+website is soo ducking slowwwww.
+
+
+nmap -> 
+	ports
+		80 - http - open
+		22 - ssh - open
+
+dirbuster - port 80
+
+source code for port 80 -> R1ckRul3s
+$IP/robots.txt -> Wubbalubbadubdub
+
+gobuster on $IP -> 
+	login.php
+	/assets
+
+-> no 
+
+try ssh login
+
+try login.php -> navigates to portal.php
+
+i dont wanna do this ctf room
+
+
+13/10/24
+
+nmap scan -> 
+	open services
+		22 -> ssh
+		80 -> http 
+
+<!--
+
+    Note to self, remember username!
+
+    Username: R1ckRul3s
+
+  -->
+
+trail-1: use hydra to bruteforce ssh login - password auth is disabled
+
+trail-2: run gobuster tool on $IP
+gobuster dir --url http://$IP -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 30
+
+-> login.php => enter creds => username from "/" source view and password from /robots.txt
+
+-> execute the commands
+-> check what permissions user has (sudo -l)
+-> check the files and folders......

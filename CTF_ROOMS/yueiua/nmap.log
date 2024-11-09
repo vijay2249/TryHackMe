@@ -1,0 +1,60 @@
+# Nmap 7.94SVN scan initiated Thu Oct 31 06:05:59 2024 as: /usr/lib/nmap/nmap --privileged -v -oN nmap.log -A 10.10.38.118
+adjust_timeouts2: packet supposedly had rtt of -465145 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -465145 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -165109 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -165109 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -165036 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -165036 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -143156 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -143156 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -106751 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -106751 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -907655 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -907655 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -906903 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -906903 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -686195 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -686195 microseconds.  Ignoring time.
+Nmap scan report for 10.10.38.118
+Host is up (0.14s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.7 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   3072 58:2f:ec:23:ba:a9:fe:81:8a:8e:2d:d8:91:21:d2:76 (RSA)
+|   256 9d:f2:63:fd:7c:f3:24:62:47:8a:fb:08:b2:29:e2:b4 (ECDSA)
+|_  256 62:d8:f8:c9:60:0f:70:1f:6e:11:ab:a0:33:79:b5:5d (ED25519)
+80/tcp open  http    Apache httpd 2.4.41 ((Ubuntu))
+|_http-title: U.A. High School
+|_http-server-header: Apache/2.4.41 (Ubuntu)
+| http-methods: 
+|_  Supported Methods: HEAD GET POST OPTIONS
+No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+TCP/IP fingerprint:
+OS:SCAN(V=7.94SVN%E=4%D=10/31%OT=22%CT=1%CU=39233%PV=Y%DS=2%DC=T%G=Y%TM=672
+OS:30245%P=x86_64-pc-linux-gnu)SEQ(SP=108%GCD=1%ISR=109%TI=Z%CI=Z%TS=A)SEQ(
+OS:SP=108%GCD=2%ISR=109%TI=Z%CI=Z%TS=A)SEQ(SP=109%GCD=1%ISR=10B%TI=Z%CI=Z%T
+OS:S=A)SEQ(SP=109%GCD=1%ISR=10B%TI=Z%CI=Z%II=I%TS=A)OPS(O1=M509ST11NW7%O2=M
+OS:509ST11NW7%O3=M509NNT11NW7%O4=M509ST11NW7%O5=M509ST11NW7%O6=M509ST11)WIN
+OS:(W1=F4B3%W2=F4B3%W3=F4B3%W4=F4B3%W5=F4B3%W6=F4B3)ECN(R=Y%DF=Y%T=40%W=F50
+OS:7%O=M509NNSNW7%CC=Y%Q=)T1(R=Y%DF=Y%T=40%S=O%A=S+%F=AS%RD=0%Q=)T2(R=N)T3(
+OS:R=N)T4(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T5(R=Y%DF=Y%T=40%W=0%S=Z
+OS:%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T6(R=Y
+OS:%DF=Y%T=40%W=0%S=O%A=Z%F=R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=40%W=0%S=Z%A=O%F=AR%
+OS:O=%RD=0%Q=)T7(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF=N%T=4
+OS:0%IPL=164%UN=0%RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=40%CD=S)
+
+Uptime guess: 3.318 days (since Sun Oct 27 22:29:05 2024)
+Network Distance: 2 hops
+TCP Sequence Prediction: Difficulty=264 (Good luck!)
+IP ID Sequence Generation: All zeros
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE (using port 23/tcp)
+HOP RTT       ADDRESS
+1   136.18 ms 10.23.0.1
+2   136.50 ms 10.10.38.118
+
+Read data files from: /usr/share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Thu Oct 31 06:06:29 2024 -- 1 IP address (1 host up) scanned in 29.38 seconds

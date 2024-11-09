@@ -1,0 +1,7 @@
+export IP=ip
+
+login to the provided website with creds provided in room
+
+-> Once logged in, navigate to the 'Security' events module and use the saved query 'Monday_Monitor' to access the logs.
+
+

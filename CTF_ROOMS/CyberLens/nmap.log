@@ -1,0 +1,4 @@
+# Nmap 7.94SVN scan initiated Thu Jul 25 20:12:39 2024 as: nmap -v -oN nmap.log -A -sV 10.10.65.63
+Nmap scan report for 10.10.65.63 [host down]
+Read data files from: /usr/bin/../share/nmap
+# Nmap done at Thu Jul 25 20:12:42 2024 -- 1 IP address (0 hosts up) scanned in 3.31 seconds

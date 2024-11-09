@@ -1,0 +1,17 @@
+export IP=ip
+
+
+nmap scan
+nmap $IP -v -oN namp.log -A
+
+port 22/80 open (among top 1000 ports)
+
+
+gobuster scan
+on port 80
+
+/spip
+/images
+
+
+

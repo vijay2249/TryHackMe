@@ -1,0 +1,48 @@
+export IP=<IP>
+
+ssh root@$IP
+pass: password
+
+
+=== Task 3
+1. check for installed packages - clue is its installed as root, that means it should be authenticated, we can check logs in /var/log/auth.log file
+
+cmd: cat /var/log/auth.log | grep -i install
+
+2. PWD of the command will be present in the logs
+
+
+
+=== Task 4
+1. for new user - need to run command adduser
+cmd: cat /home/cybert/.bash_history | grep -i adduser
+
+2. check when the file was last modified,
+use - stat command ==> cmd: stat <filePath>
+or check when this command was last executed,
+cmd: cat /var/log/auth.log | grep -i visudo
+
+3. From the logs of bash_history we can see vi command is ran as sudo, we can check the auth.log for any vi commands that are executed
+cmd: cat /var/log/auth.log | grep -i vi
+
+
+=== Task 5
+from task 4 we can see that user logged as it-admin user, so info about the user/actions done by user are best to check.
+
+cmd: cat /home/it-admin/.bash_history | grep -i bomb
+
+
+checking the commands exected we can see user did something with crontab config, lets check it
+
+/bin/os-update.sh seems strange file in crontab
+-> another way is we can see the user also opened the file in vi editor and we can see the commands executed in the vi editor in log file ".viminfo" in /home/<user> folder
+
+-> stat on /bin/os-update.sh will give the file meta data on when the file was last modified..
+
+-> cat the content in the file /bin/os-update.sh -> you can see its creating goodbye.txt file
+
+=== Task 6
+The time when the file gets executes can be seen in /etc/crontab config file 
+
+
+================= THE END ===================

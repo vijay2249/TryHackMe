@@ -1,0 +1,134 @@
+# Nmap 7.94SVN scan initiated Fri Jul 26 20:35:45 2024 as: nmap -v -oN nmap.log -A -sV -Pn 10.10.47.140
+Increasing send delay for 10.10.47.140 from 5 to 10 due to 11 out of 19 dropped probes since last increase.
+Increasing send delay for 10.10.47.140 from 20 to 40 due to 11 out of 16 dropped probes since last increase.
+Increasing send delay for 10.10.47.140 from 40 to 80 due to 11 out of 14 dropped probes since last increase.
+Increasing send delay for 10.10.47.140 from 80 to 160 due to 11 out of 13 dropped probes since last increase.
+Increasing send delay for 10.10.47.140 from 160 to 320 due to 11 out of 12 dropped probes since last increase.
+Increasing send delay for 10.10.47.140 from 320 to 640 due to 11 out of 11 dropped probes since last increase.
+Increasing send delay for 10.10.47.140 from 640 to 1000 due to 11 out of 11 dropped probes since last increase.
+Nmap scan report for 10.10.47.140
+Host is up (0.25s latency).
+Not shown: 999 closed tcp ports (conn-refused)
+PORT   STATE SERVICE VERSION
+80/tcp open  http
+|_http-favicon: Unknown favicon MD5: 50D0BF5D28E28C2661A4E48860D0F6E0
+|_http-title: OWASP Juice Shop
+|_http-cors: HEAD GET POST PUT DELETE PATCH
+| http-robots.txt: 1 disallowed entry 
+|_/ftp
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+| fingerprint-strings: 
+|   FourOhFourRequest: 
+|     HTTP/1.1 200 OK
+|     Access-Control-Allow-Origin: *
+|     X-Content-Type-Options: nosniff
+|     X-Frame-Options: SAMEORIGIN
+|     Feature-Policy: payment 'self'
+|     Accept-Ranges: bytes
+|     Cache-Control: public, max-age=0
+|     Last-Modified: Fri, 26 Jul 2024 16:37:29 GMT
+|     ETag: W/"786-190efe79314"
+|     Content-Type: text/html; charset=UTF-8
+|     Content-Length: 1926
+|     Vary: Accept-Encoding
+|     Date: Fri, 26 Jul 2024 17:44:03 GMT
+|     Connection: close
+|     <!--
+|     Copyright (c) 2014-2020 Bjoern Kimminich.
+|     SPDX-License-Identifier: MIT
+|     <!doctype html>
+|     <html lang="en">
+|     <head>
+|     <meta charset="utf-8">
+|     <title>OWASP Juice Shop</title>
+|     <meta name="description" content="Probably the most modern and sophisticated insecure web application">
+|     <meta name="viewport" content="width=device-width, initial-scale=1">
+|     <link id="favicon" rel="icon" type="image/x-icon" href="assets/public/favicon_ctf.ico">
+|     <link rel="stylesheet" typ
+|   GetRequest: 
+|     HTTP/1.1 200 OK
+|     Access-Control-Allow-Origin: *
+|     X-Content-Type-Options: nosniff
+|     X-Frame-Options: SAMEORIGIN
+|     Feature-Policy: payment 'self'
+|     Accept-Ranges: bytes
+|     Cache-Control: public, max-age=0
+|     Last-Modified: Fri, 26 Jul 2024 16:37:29 GMT
+|     ETag: W/"786-190efe79314"
+|     Content-Type: text/html; charset=UTF-8
+|     Content-Length: 1926
+|     Vary: Accept-Encoding
+|     Date: Fri, 26 Jul 2024 17:44:01 GMT
+|     Connection: close
+|     <!--
+|     Copyright (c) 2014-2020 Bjoern Kimminich.
+|     SPDX-License-Identifier: MIT
+|     <!doctype html>
+|     <html lang="en">
+|     <head>
+|     <meta charset="utf-8">
+|     <title>OWASP Juice Shop</title>
+|     <meta name="description" content="Probably the most modern and sophisticated insecure web application">
+|     <meta name="viewport" content="width=device-width, initial-scale=1">
+|     <link id="favicon" rel="icon" type="image/x-icon" href="assets/public/favicon_ctf.ico">
+|     <link rel="stylesheet" typ
+|   HTTPOptions: 
+|     HTTP/1.1 204 No Content
+|     Access-Control-Allow-Origin: *
+|     Access-Control-Allow-Methods: GET,HEAD,PUT,PATCH,POST,DELETE
+|     Vary: Access-Control-Request-Headers
+|     Content-Length: 0
+|     Date: Fri, 26 Jul 2024 17:44:02 GMT
+|     Connection: close
+|   RTSPRequest, X11Probe: 
+|     HTTP/1.1 400 Bad Request
+|_    Connection: close
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port80-TCP:V=7.94SVN%I=7%D=7/26%Time=66A3E061%P=x86_64-pc-linux-gnu%r(G
+SF:etRequest,925,"HTTP/1\.1\x20200\x20OK\r\nAccess-Control-Allow-Origin:\x
+SF:20\*\r\nX-Content-Type-Options:\x20nosniff\r\nX-Frame-Options:\x20SAMEO
+SF:RIGIN\r\nFeature-Policy:\x20payment\x20'self'\r\nAccept-Ranges:\x20byte
+SF:s\r\nCache-Control:\x20public,\x20max-age=0\r\nLast-Modified:\x20Fri,\x
+SF:2026\x20Jul\x202024\x2016:37:29\x20GMT\r\nETag:\x20W/\"786-190efe79314\
+SF:"\r\nContent-Type:\x20text/html;\x20charset=UTF-8\r\nContent-Length:\x2
+SF:01926\r\nVary:\x20Accept-Encoding\r\nDate:\x20Fri,\x2026\x20Jul\x202024
+SF:\x2017:44:01\x20GMT\r\nConnection:\x20close\r\n\r\n<!--\n\x20\x20~\x20C
+SF:opyright\x20\(c\)\x202014-2020\x20Bjoern\x20Kimminich\.\n\x20\x20~\x20S
+SF:PDX-License-Identifier:\x20MIT\n\x20\x20-->\n\n<!doctype\x20html>\n<htm
+SF:l\x20lang=\"en\">\n<head>\n\x20\x20<meta\x20charset=\"utf-8\">\n\x20\x2
+SF:0<title>OWASP\x20Juice\x20Shop</title>\n\x20\x20<meta\x20name=\"descrip
+SF:tion\"\x20content=\"Probably\x20the\x20most\x20modern\x20and\x20sophist
+SF:icated\x20insecure\x20web\x20application\">\n\x20\x20<meta\x20name=\"vi
+SF:ewport\"\x20content=\"width=device-width,\x20initial-scale=1\">\n\x20\x
+SF:20<link\x20id=\"favicon\"\x20rel=\"icon\"\x20type=\"image/x-icon\"\x20h
+SF:ref=\"assets/public/favicon_ctf\.ico\">\n\x20\x20<link\x20rel=\"stylesh
+SF:eet\"\x20typ")%r(HTTPOptions,EA,"HTTP/1\.1\x20204\x20No\x20Content\r\nA
+SF:ccess-Control-Allow-Origin:\x20\*\r\nAccess-Control-Allow-Methods:\x20G
+SF:ET,HEAD,PUT,PATCH,POST,DELETE\r\nVary:\x20Access-Control-Request-Header
+SF:s\r\nContent-Length:\x200\r\nDate:\x20Fri,\x2026\x20Jul\x202024\x2017:4
+SF:4:02\x20GMT\r\nConnection:\x20close\r\n\r\n")%r(RTSPRequest,2F,"HTTP/1\
+SF:.1\x20400\x20Bad\x20Request\r\nConnection:\x20close\r\n\r\n")%r(X11Prob
+SF:e,2F,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nConnection:\x20close\r\n\r\
+SF:n")%r(FourOhFourRequest,925,"HTTP/1\.1\x20200\x20OK\r\nAccess-Control-A
+SF:llow-Origin:\x20\*\r\nX-Content-Type-Options:\x20nosniff\r\nX-Frame-Opt
+SF:ions:\x20SAMEORIGIN\r\nFeature-Policy:\x20payment\x20'self'\r\nAccept-R
+SF:anges:\x20bytes\r\nCache-Control:\x20public,\x20max-age=0\r\nLast-Modif
+SF:ied:\x20Fri,\x2026\x20Jul\x202024\x2016:37:29\x20GMT\r\nETag:\x20W/\"78
+SF:6-190efe79314\"\r\nContent-Type:\x20text/html;\x20charset=UTF-8\r\nCont
+SF:ent-Length:\x201926\r\nVary:\x20Accept-Encoding\r\nDate:\x20Fri,\x2026\
+SF:x20Jul\x202024\x2017:44:03\x20GMT\r\nConnection:\x20close\r\n\r\n<!--\n
+SF:\x20\x20~\x20Copyright\x20\(c\)\x202014-2020\x20Bjoern\x20Kimminich\.\n
+SF:\x20\x20~\x20SPDX-License-Identifier:\x20MIT\n\x20\x20-->\n\n<!doctype\
+SF:x20html>\n<html\x20lang=\"en\">\n<head>\n\x20\x20<meta\x20charset=\"utf
+SF:-8\">\n\x20\x20<title>OWASP\x20Juice\x20Shop</title>\n\x20\x20<meta\x20
+SF:name=\"description\"\x20content=\"Probably\x20the\x20most\x20modern\x20
+SF:and\x20sophisticated\x20insecure\x20web\x20application\">\n\x20\x20<met
+SF:a\x20name=\"viewport\"\x20content=\"width=device-width,\x20initial-scal
+SF:e=1\">\n\x20\x20<link\x20id=\"favicon\"\x20rel=\"icon\"\x20type=\"image
+SF:/x-icon\"\x20href=\"assets/public/favicon_ctf\.ico\">\n\x20\x20<link\x2
+SF:0rel=\"stylesheet\"\x20typ");
+
+Read data files from: /usr/bin/../share/nmap
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Fri Jul 26 20:44:25 2024 -- 1 IP address (1 host up) scanned in 520.66 seconds

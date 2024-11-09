@@ -1,0 +1,152 @@
+export IP=10.10.106.166
+
+nmap scan
+nmap $IP -v -oN nmap.log -A
+
+PORT   STATE SERVICE VERSION
+21/tcp open  ftp     vsftpd 2.0.8 or later
+|_ftp-anon: Anonymous FTP login allowed (FTP code 230)
+| ftp-syst: 
+|   STAT: 
+| FTP server status:
+|      Connected to ::ffff:10.23.27.135
+|      Logged in as ftp
+|      TYPE: ASCII
+|      No session bandwidth limit
+|      Session timeout in seconds is 300
+|      Control connection is plain text
+|      Data connections will be plain text
+|      At session startup, client count was 3
+|      vsFTPd 3.0.3 - secure, fast, stable
+|_End of status
+22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.7 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   3072 14:58:60:34:7e:d1:e6:98:3e:c1:cf:51:57:e1:28:97 (RSA)
+|   256 20:b6:2c:a5:1d:a7:f9:2c:73:82:b7:e1:77:1f:34:eb (ECDSA)
+|_  256 d9:1f:4a:47:e6:4e:a3:97:0f:10:fd:de:93:68:ae:37 (ED25519)
+53/tcp open  domain  ISC BIND 9.16.1 (Ubuntu Linux)
+| dns-nsid: 
+|_  bind.version: 9.16.1-Ubuntu
+No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+TCP/IP fingerprint:
+OS:SCAN(V=7.94SVN%E=4%D=11/2%OT=21%CT=1%CU=34049%PV=Y%DS=2%DC=T%G=Y%TM=6725
+OS:CE7C%P=x86_64-pc-linux-gnu)SEQ(SP=F9%GCD=1%ISR=109%TI=Z%CI=Z%II=I%TS=A)O
+OS:PS(O1=M509ST11NW7%O2=M509ST11NW7%O3=M509NNT11NW7%O4=M509ST11NW7%O5=M509S
+OS:T11NW7%O6=M509ST11)WIN(W1=F4B3%W2=F4B3%W3=F4B3%W4=F4B3%W5=F4B3%W6=F4B3)E
+OS:CN(R=Y%DF=Y%T=40%W=F507%O=M509NNSNW7%CC=Y%Q=)T1(R=Y%DF=Y%T=40%S=O%A=S+%F
+OS:=AS%RD=0%Q=)T2(R=N)T3(R=N)T4(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T5
+OS:(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S=A%A=Z
+OS:%F=R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF=
+OS:N%T=40%IPL=164%UN=0%RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=40%
+OS:CD=S)
+
+
+
+
+=> ftp anonymous login -> nothing in folder structure
+
+- scanning all ports via nmap
+-> 21 - ftp
+-> 22 - ssh
+-> 53 - open domain ISC BIND 9.16.1
+	dns-nsid
+-> 1337 - web-server /htt[
+-> 1883 - mosquitto v1.6.9
+
+== complete output
+PORT     STATE SERVICE                 VERSION
+21/tcp   open  ftp                     vsftpd 2.0.8 or later
+|_ftp-anon: Anonymous FTP login allowed (FTP code 230)
+| ftp-syst: 
+|   STAT: 
+| FTP server status:
+|      Connected to ::ffff:10.23.27.135
+|      Logged in as ftp
+|      TYPE: ASCII
+|      No session bandwidth limit
+|      Session timeout in seconds is 300
+|      Control connection is plain text
+|      Data connections will be plain text
+|      At session startup, client count was 2
+|      vsFTPd 3.0.3 - secure, fast, stable
+|_End of status
+22/tcp   open  ssh                     OpenSSH 8.2p1 Ubuntu 4ubuntu0.7 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   3072 14:58:60:34:7e:d1:e6:98:3e:c1:cf:51:57:e1:28:97 (RSA)
+|   256 20:b6:2c:a5:1d:a7:f9:2c:73:82:b7:e1:77:1f:34:eb (ECDSA)
+|_  256 d9:1f:4a:47:e6:4e:a3:97:0f:10:fd:de:93:68:ae:37 (ED25519)
+53/tcp   open  domain                  ISC BIND 9.16.1 (Ubuntu Linux)
+| dns-nsid: 
+|_  bind.version: 9.16.1-Ubuntu
+1337/tcp open  http                    Apache httpd 2.4.41 ((Ubuntu))
+|_http-title: EXPOSED
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-server-header: Apache/2.4.41 (Ubuntu)
+1883/tcp open  mosquitto version 1.6.9
+| mqtt-subscribe: 
+|   Topics and their most recent payloads: 
+|     $SYS/broker/load/bytes/sent/5min: 0.73
+|     $SYS/broker/heap/maximum: 49688
+|     $SYS/broker/load/sockets/1min: 0.63
+|     $SYS/broker/load/messages/received/5min: 0.20
+|     $SYS/broker/messages/received: 1
+|     $SYS/broker/load/connections/1min: 0.63
+|     $SYS/broker/uptime: 2310 seconds
+|     $SYS/broker/load/connections/5min: 0.20
+|     $SYS/broker/messages/sent: 1
+|     $SYS/broker/store/messages/bytes: 181
+|     $SYS/broker/load/messages/sent/15min: 0.07
+|     $SYS/broker/load/bytes/received/1min: 11.40
+|     $SYS/broker/load/bytes/sent/15min: 0.27
+|     $SYS/broker/load/messages/sent/1min: 0.63
+|     $SYS/broker/version: mosquitto version 1.6.9
+|     $SYS/broker/load/bytes/received/5min: 3.28
+|     $SYS/broker/load/sockets/5min: 0.20
+|     $SYS/broker/load/bytes/sent/1min: 2.53
+|     $SYS/broker/load/messages/sent/5min: 0.20
+|     $SYS/broker/load/messages/received/15min: 0.07
+|     $SYS/broker/load/messages/received/1min: 0.63
+|     $SYS/broker/load/bytes/received/15min: 1.16
+|     $SYS/broker/bytes/sent: 4
+|     $SYS/broker/load/connections/15min: 0.07
+|     $SYS/broker/bytes/received: 18
+|_    $SYS/broker/load/sockets/15min: 0.07
+
+
+
+== gobuster scan on port 1337
+
+===============================================================
+Gobuster v3.6
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://10.10.106.166:1337/
+[+] Method:                  GET
+[+] Threads:                 100
+[+] Wordlist:                /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.6
+[+] Follow Redirect:         true
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/admin                (Status: 200) [Size: 1534]
+/javascript           (Status: 403) [Size: 280]
+/phpmyadmin           (Status: 200) [Size: 14773]
+/server-status        (Status: 403) [Size: 280]
+
+
+-> open /phpmyadmin - url
+-> seems a login form -> enter dummy creds -> admin/admin -> failure and it redirects to /index.php
+
+also from error message -> mysql server and also there is an user with username admin
+
+lets sqlmap this
+-> find all databases
+cmd: sqlmap -u 'http://10.10.106.166:1337/phpmyadmin/index.php?pma_username=test&pma_password=test' --dbs --level=5
+
+--> taking too much time this sqlmap vuln scan
+
+== end of day for 02/11/42

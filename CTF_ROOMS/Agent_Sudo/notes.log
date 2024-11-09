@@ -1,0 +1,40 @@
+export IP
+
+nmap scan -> nmap $IP -v -oN nmap.log #scanning 1000 ports
+
+read content displayed in the website
+
+change user-agent to something else as mentioned and try it again 
+
+found chris
+
+try hydra for brute force attack on ftp server
+as we know the user
+
+hydra -l <username> -P <passwordListFile> ftp://$IP
+
+question mentions something about steg -> which means storing data into other files - like into pictures..
+
+first thing to use to do steganograpny is binwalk
+
+"binwalk -e <picName>"
+need password for zip file, use john the ripper to crack it
+
+you will get some data -> decode with base64 -> you will get some more data
+
+next use steghide extract -sf <otherPic> to extract data
+
+enter password
+
+read data from extracted file
+
+
+do ssh and do the remaining drill
+
+download image -> do reverse image search and filter to fox news
+
+Good Work - with help nice things learned in the way
+
+
+
+

@@ -1,0 +1,91 @@
+# Nmap 7.94SVN scan initiated Sat Nov  2 09:08:38 2024 as: /usr/lib/nmap/nmap --privileged -v -oN nmap.log -A -p- 10.10.106.166
+Increasing send delay for 10.10.106.166 from 0 to 5 due to 45 out of 148 dropped probes since last increase.
+Increasing send delay for 10.10.106.166 from 5 to 10 due to 11 out of 21 dropped probes since last increase.
+Nmap scan report for 10.10.106.166
+Host is up (0.18s latency).
+Not shown: 65530 closed tcp ports (reset)
+PORT     STATE SERVICE                 VERSION
+21/tcp   open  ftp                     vsftpd 2.0.8 or later
+|_ftp-anon: Anonymous FTP login allowed (FTP code 230)
+| ftp-syst: 
+|   STAT: 
+| FTP server status:
+|      Connected to ::ffff:10.23.27.135
+|      Logged in as ftp
+|      TYPE: ASCII
+|      No session bandwidth limit
+|      Session timeout in seconds is 300
+|      Control connection is plain text
+|      Data connections will be plain text
+|      At session startup, client count was 2
+|      vsFTPd 3.0.3 - secure, fast, stable
+|_End of status
+22/tcp   open  ssh                     OpenSSH 8.2p1 Ubuntu 4ubuntu0.7 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   3072 14:58:60:34:7e:d1:e6:98:3e:c1:cf:51:57:e1:28:97 (RSA)
+|   256 20:b6:2c:a5:1d:a7:f9:2c:73:82:b7:e1:77:1f:34:eb (ECDSA)
+|_  256 d9:1f:4a:47:e6:4e:a3:97:0f:10:fd:de:93:68:ae:37 (ED25519)
+53/tcp   open  domain                  ISC BIND 9.16.1 (Ubuntu Linux)
+| dns-nsid: 
+|_  bind.version: 9.16.1-Ubuntu
+1337/tcp open  http                    Apache httpd 2.4.41 ((Ubuntu))
+|_http-title: EXPOSED
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-server-header: Apache/2.4.41 (Ubuntu)
+1883/tcp open  mosquitto version 1.6.9
+| mqtt-subscribe: 
+|   Topics and their most recent payloads: 
+|     $SYS/broker/load/bytes/sent/5min: 0.73
+|     $SYS/broker/heap/maximum: 49688
+|     $SYS/broker/load/sockets/1min: 0.63
+|     $SYS/broker/load/messages/received/5min: 0.20
+|     $SYS/broker/messages/received: 1
+|     $SYS/broker/load/connections/1min: 0.63
+|     $SYS/broker/uptime: 2310 seconds
+|     $SYS/broker/load/connections/5min: 0.20
+|     $SYS/broker/messages/sent: 1
+|     $SYS/broker/store/messages/bytes: 181
+|     $SYS/broker/load/messages/sent/15min: 0.07
+|     $SYS/broker/load/bytes/received/1min: 11.40
+|     $SYS/broker/load/bytes/sent/15min: 0.27
+|     $SYS/broker/load/messages/sent/1min: 0.63
+|     $SYS/broker/version: mosquitto version 1.6.9
+|     $SYS/broker/load/bytes/received/5min: 3.28
+|     $SYS/broker/load/sockets/5min: 0.20
+|     $SYS/broker/load/bytes/sent/1min: 2.53
+|     $SYS/broker/load/messages/sent/5min: 0.20
+|     $SYS/broker/load/messages/received/15min: 0.07
+|     $SYS/broker/load/messages/received/1min: 0.63
+|     $SYS/broker/load/bytes/received/15min: 1.16
+|     $SYS/broker/bytes/sent: 4
+|     $SYS/broker/load/connections/15min: 0.07
+|     $SYS/broker/bytes/received: 18
+|_    $SYS/broker/load/sockets/15min: 0.07
+No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+TCP/IP fingerprint:
+OS:SCAN(V=7.94SVN%E=4%D=11/2%OT=21%CT=1%CU=35015%PV=Y%DS=2%DC=T%G=Y%TM=6725
+OS:D4D3%P=x86_64-pc-linux-gnu)SEQ(SP=103%GCD=1%ISR=10C%TI=Z%CI=Z%II=I%TS=A)
+OS:OPS(O1=M509ST11NW7%O2=M509ST11NW7%O3=M509NNT11NW7%O4=M509ST11NW7%O5=M509
+OS:ST11NW7%O6=M509ST11)WIN(W1=F4B3%W2=F4B3%W3=F4B3%W4=F4B3%W5=F4B3%W6=F4B3)
+OS:ECN(R=Y%DF=Y%T=40%W=F507%O=M509NNSNW7%CC=Y%Q=)T1(R=Y%DF=Y%T=40%S=O%A=S+%
+OS:F=AS%RD=0%Q=)T2(R=N)T3(R=N)T4(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T
+OS:5(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S=A%A=
+OS:Z%F=R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF
+OS:=N%T=40%IPL=164%UN=0%RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=40
+OS:%CD=S)
+
+Uptime guess: 26.661 days (since Sun Oct  6 18:38:09 2024)
+Network Distance: 2 hops
+TCP Sequence Prediction: Difficulty=259 (Good luck!)
+IP ID Sequence Generation: All zeros
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE (using port 3306/tcp)
+HOP RTT       ADDRESS
+1   217.21 ms 10.23.0.1
+2   217.38 ms 10.10.106.166
+
+Read data files from: /usr/share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Sat Nov  2 09:29:23 2024 -- 1 IP address (1 host up) scanned in 1244.82 seconds
