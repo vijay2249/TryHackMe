@@ -1,0 +1,131 @@
+=== Linux Forensics
+Linux is very light-weight and can run on very low resources
+
+Its modular in nature and can be customized as per requirements of user or enterprise
+
+
+=== OS and Account Information
+In linux, everything is stored in a file and everything is considered as a file.
+
+## OS Information
+More information about the os release it can be found in `/etc/os-release` file location - cat the contents and check the version of the os
+
+## User Accounts
+file `/etc/passwd` file contains information about the user accounts that exists on the machine
+
+The file contains 7 colon separated fields, describing username, password information, user id(uid), group id (gid), description, home directory information, and the default shell that executes when the user logs in.
+
+-> User created accounts have uids >=1000.
+
+NOTE: cool trick -> use column command to display content in table format (check man pages for column command for more info)
+
+## Group Information
+the file `/etc/group` contains information abou the different user groups present on the host.
+
+## Sudoers List
+A linux host allow only those users to elevate privileges to "sudo", which are present in the sudoers list that are mentioned in `/etc/sudoers` file path
+
+Also as an example, the user needs to be sudoer to actually read the contents of this file
+
+
+## Login Information
+the file `/var/log/btmp` saves information about the failed logins
+the file `/var/log/wtmp` keeps historical data of logins
+
+- These files are binary files which means that they cant display content directly with cat command
+- for these specific files we can user last command
+cmd: sudo last -f /var/log/wtmp
+
+
+## Authentication Logs
+- Every yser that authenticates on a linux host is logged in the file `/var/log/auth.log` 
+- It can be read using the 'cat' command
+
+
+=== System Configuration
+## Hostname
+the hostname is stpred in the `/etc/hostname` file on a linux host - use cat cmd to display content
+
+
+## Timezone
+timezone of the system/host - present in location `/etc/timezone` - use cat cmd to display content
+
+
+## Network Configuration
+- the info about the linux network interfaces - present in location `/etc/network/interfaces` - use cat cmd to display content
+
+- similarly we can use 'ip' command to get info about system's IP and MAC address of differnet interfaces.
+
+
+## Active network connections
+- use 'netstat' utility to find active network connections on a linux host 
+cmd: netstat -natp
+
+
+## Running Processes
+- 'ps' command shows details abou the running processes - if no arguments mentioned then it shows only user started processes
+cmd: ps aux #this will show all process on host
+
+
+## DNS information
+- the file `/etc/hosts` contains the configurations for the DNS name assignment. - use 'cat' cmd to display content
+- the information about DBS servers that a linux hosts talks to for DNS resolution are stored in `/etc/resolv.conf` file - use 'cat' cmd to display content
+
+
+=== Persistence mechanisms
+Persistence mechanisms are ways a program can survice after a system reboot.
+
+
+## Cron jobs
+- cron jobs are commands that run periodically after a set amount of time.
+- these are mentioned in file `/etc/crontab` - use 'cat' cmd to display contents
+
+
+## Service Startup
+- services can be set up in linux that will start and run in the background after every system boot. 
+- these list of services can be found in `/etc/init.d` directory 
+
+
+## .bashrc
+- When a bash shell is spawned, it runs the commands stored in the `~/.bashrc` file. 
+- This file can be considered as a startup list of actions to be performed.
+
+- system wide settings are stored in `/etc/bash.bashrc` and `/etc/profile` files.
+
+
+=== Evidence of Execution
+
+## Sudo execution history
+- all the commands that are run on a linux host using 'sudo' are stored in `auth.log` file.
+
+
+## Bash History
+- any commands other than the ones run using 'sudo' are stored in bash history file.
+- file location: `~/.bash_history`
+- every user's bash history is stored separately in that user's home folder
+
+
+## Files accessed using vim
+- the vim text editor stores logs for opened files in vim in the file named `.viminfo` in the home directory
+- this file contains command line history, search string history etc. for the opened files using vim
+
+
+
+=== Log files
+Logs are generally found in the `/var/log` directory
+
+
+## Syslog
+- contains messages that are recorded by host about system activity. the detail which is recorded in these messages is configurable through the logging level
+- file location: `/var/log/syslog` - use cat cmd to display contents
+- the log line displays - system time, system name, the process that sent the log [the process id], and the details of the log.
+
+
+## Auth logs
+`/var/log/auth.log` file logs
+
+
+## Third party logs
+Similar to the syslog and authentication logs, the /var/log/ directory contains logs for third-party applications such as webserver, database, or file share server logs.
+
+

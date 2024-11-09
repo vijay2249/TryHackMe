@@ -1,0 +1,5 @@
+-sn flag to discover live hosts
+-sS - syn stealth scan
+-sU - scan UDP ports
+-O - OS detection
+-sV - Service and Version Detection

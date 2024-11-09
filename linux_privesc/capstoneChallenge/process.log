@@ -1,0 +1,90 @@
+ssh into target machine
+
+=== Trail 1
+check sudo permissions
+cmd: sudo -l
+  
+failure 1
+
+=== check for cronjobs
+
+cmd: cat /etc/crontab
+
+and the file is empty
+
+failure 2
+
+
+cmd: hostname
+
+
+=== check /etc/passwd and /etc/shadow
+
+/etc/passwd -> able to read
+/etc/shadow -> permission denied
+
+-> password cracking failed
+
+
+=== history
+
+this gives that flag2.txt is present in /home/rootflag folder
+and there is another user "missy"
+
+
+=== Enum with enum4Linux
+failed
+found nothing
+
+
+=== Enum with linpeas and linEnum, lse
+
+starting with LinEnum.sh
+-> 
+-> we have SUID set for /usr/bin/base64 program, lets test to see whether we can display contents of /etc/shadow
+
+boom -> able to display contents of /etc/shadow file
+
+now unshadow /etc/passwd and /etc/shadow
+
+and crack password with John The Ripper
+
+get missy password -> find flag1.txt location -> and cat the contents
+
+
+Now for flag2 -> search for flag2.txt with missy as user -> no luck -> maybe permission denied 
+
+check for flag2.txt file from leonard user -> still no luck -> now either its root or check for another user if any in the system 
+
+to check users -> check contents of /etc/passwd file
+
+but from the directories in the its root user we need to get permissions to
+
+john is unable to crack root password from /etc/passwd and /etc/shadow files contents
+
+
+-> once again lets go back to linEnum enum
+-> nothing new apart from SUID base64
+
+
+=== checked for NFS volumes
+cmd: showmount -e <IP>
+
+-> no luck
+
+
+=== `sudo -l` over missy user
+this shows that missy can run find command with root privileges
+
+
+now lets check if we have any option to enumerate this sudo privilege by searching GTFOBins for any commands
+
+-> run the command `sudo find . -exec /bin/sh \; -quit`
+
+and there we go, a root shell
+
+And there we go for flag2.txt contents
+
+
+================ And we conclude the Linux Privilege Escalation Room
+

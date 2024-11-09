@@ -1,0 +1,75 @@
+=== Tools
+-> Reverse Engineering & Debugging
+1. Ghidra - NSA developed open source reverse engineering suite
+2. x64dbg - open-source debugger for binaries in x64 and x32 formats
+3. OllyDbg - Debugger for reverse engineering at the assembly level
+4. Radare2 - A sophisticated open source platform for reverse engineering
+5. Binary Ninja - tool for disassembling and decompiling binaries
+6. PEID - packer, cryptor and compiler detection tool
+
+-> Disassemblers & Decompilers
+They help analysts understand malicious software's behaviour, logic, and control flow by breaking it into a more understandable format.
+
+Tools: 
+1. CFF Explorer - A PE editor designed to analyze and edit portable executable (PE) files
+2. Hopper disassembler - a debugger, disassembler and decompiler
+3. RetDec - open-source decompiler for machine code
+
+
+-> Static & Dynamic Analysis
+Static analysis involves inspecting the code without executing it, while dynamic analysis involves observing its behaviour as it runs
+
+Tools:
+1. Process Hacker - sophisticated memory editor and process watcher
+2. PEView - protable executable file viewer for analysis
+3. Dependency Walker - tool for displaying an executable's DLL dependencies
+4. DIE (Detect it easy) - packer, compiler and cryptor detection tool
+
+
+
+-> Forensics & Incident Response
+Digital Forensics involves the collection, analysis, and preservation of digital evidence from various sources like computers, networks, and storage devices
+Incident Response focuses on the detection, containment, eradication, and recovery from cyberattacks
+
+tools:
+1. Volatility - RAM dump analysis framework for memory forensics
+2. Rekall - Framework for memory forensics in incident response
+3. FTK Imager - Disc image acquisition and analysis tools for forensic use
+
+
+-> Network Analysis
+Network Analysis includes different methods and techniques for studying and analysing networks to uncover patterns, optimize performance, and understand the underlying structure and behaviour of the network.
+
+Tools:
+1. Wireshark
+2. Nmap
+3. Netcat
+
+
+-> File Analysis
+File Analysis is a technique used to examine files for potential security threats and ensure proper file permissions.
+
+Tools:
+1. FileInsight - program for looking through and editing binary files
+2. Hex Fiend - Hex editor that is light and quick
+3. HxD - Binary file viewing and editing with a hex editor
+
+
+-> Scripting & Automation
+Scripting and Automation involve using scripts such as PowerShell and Python to automate repetitive tasks and processes, making them more efficient and less prone to human error.
+
+
+
+-> Sysinternals Suite
+The Sysinternals Suite is a collection of advanced system utilities designed to help IT professionals and developers manage, troubleshoot, and diagnose Windows systems.
+
+Tools:
+1. Autoruns - shows what executables are configured to run during system boot-up
+2. Process Explorer - provides information about running processes
+3. Process Monitor - Monitors and logs real-time process/thread activity.
+
+
+
+
+=== Commonly Used tools
+

@@ -1,0 +1,1 @@
+# Nmap 7.94SVN scan initiated Sun Oct 13 13:52:16 2024 as: /usr/lib/nmap/nmap --privileged -v -oN nmap.log5 10.10.50.13

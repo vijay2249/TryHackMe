@@ -1,0 +1,56 @@
+Wireshark is an open-sourcce, cross platform netowrk packet analyser tool capable of sniffing and investigating live traffic and inspecting packet capture (PCAP)
+
+Use cases of this tool:
+1. Detecting and troubleshooting network problems, such as network load failrure points and congestion
+2. Detecting security anomalies, such as rogue hosts, abnormal port usaeg and suspicious traffic
+3. Investigating and learning protocol details, such as response codes and payload data
+
+
+Wireshark is not IDS. it only allows analysts to discover and investigate the packets in depth.
+
+
+Toolbar -> contains multiple menus and shortcuts for packet sniffing and processing etc..
+
+Display Filter Bar -> main query and filtering section
+
+Recent Files -> list of recent files
+
+Capture Filter and Interfaces -> capture filters and available sniffing points(network interface), the network interface is the connection point between a computer and a network. the software connection enables networking hardware
+
+status bar -> tool status, profile and numeric packet information
+
+
+packet list pane -> summary of each packet (source, destination address, protocol and packet info).
+
+packet details pane -> detailed protocol breakdown of the selected packet
+
+packet bytes pane -> hex and decoded ASCII represenation of the selected packet. it highlights the packet field depending on the clicked section in the details pane
+
+
+
+Along with quick packet information, wireshark also colors packets in order of different conditions and the protocol to spot anomalies and protocols in captures quickly. 
+
+
+Wireshark can combine two pcap files into a single file.
+
+
+======= Packet Dissection
+Also known as protocol dissection, which investigates packet details by decoding available protocols and fields.
+
+
+Wireshark also provides feature to search packet by number which it assigns while packet sniffing
+
+It can also find packets by packet content. We can use "Edit -> find Packet" menu to make a search inside the packets for a particular event of interest.
+
+There are two crucial points in finding packets. First is knowing the input type, This functionality accepts four types of inputs (display filter, HEX, string, regex). these searches are case insensitive by default.
+
+The second is choosing the search field, we can conduct searches in the three panes namely packet list, packet details, and packet bytes
+
+We can add comments for particular packets that will help the further investigation or remind and point out important/suspicious points for other layer analysts.
+
+
+
+We can also export specific packets in this tool, for this go to "File -> Export Specified Packets" menu
+
+Wireshark can extract files transferred through the wire.
+

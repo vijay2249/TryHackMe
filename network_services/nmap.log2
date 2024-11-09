@@ -1,0 +1,2 @@
+# Nmap 7.94SVN scan initiated Sat Oct 12 13:42:16 2024 as: /usr/lib/nmap/nmap --privileged -v -oN nmap.log2 -p- 10.10.168.230
+Increasing send delay for 10.10.168.230 from 10 to 20 due to 11 out of 16 dropped probes since last increase.

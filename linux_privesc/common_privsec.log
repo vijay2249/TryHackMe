@@ -1,0 +1,96 @@
+Privilege escalation usually involves going from a lower permission to a higher permission. Its exploitation of a vulnerability, design floaw or condifuration oversight in an operating system or application to gain unauthorized access to resources that are usually restricted from the servers.
+
+
+Two privilege escalation variants:
+1. Horizontal Privilege escalations
+2. Vertical Privilege escalations
+
+
+================== Enumeration
+
+===> LinEnum
+A simple bash-script that performs common commands related to privilege escalation, savint time and allowing more effort to be putting toward getting root. 
+
+LinEnum tool: http://github.com/rebootuser/LinEnum/blob/master/LinEnum.sh
+
+LinEnum output contains:
+1. Kernel Information
+2. read/write sensitive files
+3. SUID files
+4. Crontab Components/Contents
+
+
+
+
+================== Abusing SUID/GUID Files
+check if any files are having SUID/SGID permission set. This means that the files can be run with the permissions of the file owner/group. In this case, as the super-user. We can leverage this to get a shell with these privileges.
+
+
+In linux, everything is a file including directories and devices which have permissions to allow or restrict three operation which are read, write, execute. 
+
+finding SUID files cmd: find / -perm -u=s -type f 2>/dev/null
+
+
+
+
+================== Exploiting writable /etc/passwd
+Understandng /etc/passwd format
+-> this file contains one entry per line for each user of th system. All fields are separated by a colon(:).
+
+-> Total 7 fields in this file as follows: 
+test:x:0:0:root:/root:/bin/bash
+
+1 (test) -> Username => used when user logs in, it should be between 1 and 32 characters in length
+2 (x) -> password => indicates that encrypted password is stored in /etc/shadow file (we need to use passwd command to store new password in /etc/shadow file)
+3. (0) -> User ID (UID) => each user must be assigned an ID - 0 is reserved for root, 1-99 are reserver for other predefined accounts - 100-999 are reserved by system for admin and system accounts/groups
+4. (0) -> Group ID (GID) => the primary group ID which is stored in /etc/group file
+5. (root) -> User ID info => It allow you to add extra information about the users such as user’s full name, phone number etc
+6. (/root) -> home directory => absolute path of the directory of the user when they login in
+7. (/bin/bash) -> command/shell => absolute path of the command shell .
+
+
+====================== Esacping Vi editor
+Everytime when logged in as a user, run the command "sudo -l" to list what commands you as a user is able to run as super user. 
+
+
+When you find a misconfigured binaries during enumeration process, when you check what binaries user account have access to, a good place to look up how to exploit them is GTFOBins. which is a curated list of Unix binaries that can be exploited by an attacker to bypass local security restrictions
+
+
+===================== Exploiting Crontab
+Cron daemon is a long running process that executes commands at apecific datea and times. You can use this to schedule activities, either as one time events or as recurring tasks. 
+
+In linux system cron jobs are mentioned in "/etc/crontab" file
+
+Format of cronjob: 
+17 *   1  *   *   *  root  cd / && run-parts --report /etc/cron.hourly
+
+#  m   h  dom mon dow user command
+
+# - id
+m - minute
+h - hour
+dom - day of month
+mon - Month
+dow - day of week
+user - commands run as user
+command - command to execute
+
+
+================== Exploiting PATH variable
+PATH is an environmental variable in Linux and Unix like operating systems which specifies directories that hold executable programs
+When the user runs any command in the terminal, it searches for executable files with the help of the PATH Variable in response to commands executed by a user.
+
+If any superuser binary is calling the PATH variable, then we can override this PATH to our custom binaries or files that can intern give us root permissions
+
+
+
+
+
+
+
+=============== Linux Privilege escalation checklists
+- https://github.com/netbiosX/Checklists/blob/master/Linux-Privilege-Escalation.md
+- https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Linux%20-%20Privilege%20Escalation.md
+- https://sushant747.gitbooks.io/total-oscp-guide/privilege_escalation_-_linux.html
+- https://payatu.com/blog/a-guide-to-linux-privilege-escalation/ 
+

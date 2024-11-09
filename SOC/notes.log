@@ -1,0 +1,66 @@
+SOC - Security Operations Center
+
+Main focus of SOC team is to keep 'detection' and 'response' intact. The SOC team has some resources available in the form of security solutions that help them achieve this.
+
+These solutions integrate the whole company's network and all the systems to monitor them from one centralized location.
+
+Detection
+1. Detect Vulnerabilities 
+2. Detect unauthorized activity
+3. Detect policy violations
+4. Detect intrusions
+
+Response
+1. Support with the incident response
+
+
+Three pillars of SOC -> People, Process, Technology
+
+Roles hierarchy
+-> CISO
+    --> SOC Manager
+         ----> SOC analyst 1
+         ----> SOC analyst 2
+         ----> SOC analyst 3
+         ----> Security Engineer
+         ----> Detection engineer
+
+
+The alert triage is the basis of the SOC team, the first response to any alert is to perform the triage, the triage is focused on alanyzing the specific alert. this determines the severity of the alert and helps us to prioritize it.
+This alert triage is all about answering the 5w's 
+
+5 W's:
+1. Who
+2. What
+3. Where
+4. When
+5. Why
+
+
+
+
+SIEM - Security Incident and Event Management.
+This tool collects logs from various network devices, referred to as log sources. Detection rules are configured in the SIEM solution, which contains logic to identify suspicious activity. The SIEM solution provides us with the detections after correlating them with multiple log sources and alerts us in case of a match with any of the rules. Modern SIEM solutions surpass this rule based detection analysis, providing us with user behavior analytics and threat intelligence capability. Machine learning algorithms support this to enhance the detection capabilities.
+
+Endpoint Detection and Response (EDR) provides the SOC team with detailed real-time and historical visibility of the devices’ activities.
+
+Firewall: functions purely for network security and acts as a barrier between your internal and external networks (such as the Internet). It monitors incoming and outgoing network traffic and filters any unauthorized traffic.
+
+
+
+
+=== Digital Forensics
+->Methods
+1. Collection - data collection
+2. Examination
+3. Analysis
+4. Reporting
+
+
+FTK imager is a widely used tool for taking disk images of windows operating systems. it offers a user friendly GUI for creating the iamge in various formats. This tool can analyze the contents of the disk image. it can be used for both acquisition and analysis purposes
+
+Autopsy: Autopsy is a popular open-source digital forensics platform. An investigator can import an acquired disk image into this tool, and the tool will conduct an extensive analysis of the image. It offers various features during image analysis, including keyword search, deleted file recovery, file metadata, extension mismatch detection, and many more.
+
+
+For PDF files metadata, use 'pdfinfo' tool
+for photos metadata, use 'exiftool' tool

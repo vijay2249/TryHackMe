@@ -1,0 +1,12 @@
+-> Ceaser Cypher
+
+-> Symmectric Encryption
+gpg
+gpg --output quote01.txt --decrypt quote01.txt.gpg
+
+openssl
+openssl aes-256-cbc -d -in quote02 -out quote02.txt
+
+-> Asymmectric Encryption
+
+

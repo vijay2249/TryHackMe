@@ -1,0 +1,301 @@
+When scanning a target network - the basic questions to ask are
+1. Which systems are up?
+2. What services are running on these systems?
+
+
+
+ARP Scan -> uses ARP requests to discover live hosts
+ICMP -> uses ICMP requests to identify live hosts
+TCP/UDP ping scan -> sends packets to TCP ports and UDP ports to determine live hosts
+
+Nmap tool was created by Gordon Lyon and released in 1997 - free and open-source software released under GPL license
+
+Nmap scan usually goes through the following steps
+1. Enumerate targets
+2. Discover live hosts
+3. Reverse DNS lookups
+4. Scan ports
+5. Detect versions
+6. Detect OS
+7. Traceroute
+8. Scripts
+9. Write Output
+
+
+
+=== Enumerating Targets
+cmd: nmap -iL hosts.txt
+
+cmd: nmap 10.10.10.20-40 #will scan ip's from .20 to .40
+
+If you want to check the list of hosts that Nmap will scan, you can use 'nmap -sL TARGETS'
+
+
+If you want to ping a system on the same subnet, an ARP query should precede the ICMP Echo.
+
+
+
+Although TCP and UDP are transport layers, for network scanning purposes, a scanner can send a specially-crafted packet to common TCP or UDP ports to check whether the target will respond. This method is efficient, especially when ICMP Echo is blocked.
+
+
+- When a privileged user tries to scan targets on a local network, Nmap uses ARP requests.
+- when a privileged user tries to scan targets outside the local network, Nmap uses ICMP echo requests, TCP ACK to port 80, TCP SYN to port 443 and ICMP timestamp request.
+- when a unprivileged user tries to scan targets outside the local network, Nmap resorts to a TCP 3-way handshake by sending SYN packets to port 80 and 443
+
+Nmap, by default, uses a ping scan to find live hosts, then proceeds to scan live hosts only
+
+If you want to use Nmap to discover online hosts without port scanning the live systems -> use '-sN' flag
+
+ARP scan is possible only if you are on the same subnet as the target systems
+
+On an Ethernet(802.3) and WiFi(802.11), you need to know the MAC address of any system before you can communicate with it. The MAC address is necessary for link layer header.
+
+This header contains the source and destination MAC addresses among other fields.
+
+To do only ARP scan without port scanning:
+flags :-> nmap -PR -sn <target>
+-PR -> only do ARP scan
+-sn -> disable port scan
+
+
+
+Considering arp-scan, there is separate tool just for arp scans, called "arp-scan"
+
+wiki page: https://www.royhills.co.uk/wiki/index.php/Arp-scan_Documentation
+
+
+
+Ping Requests => ICMP Type 8/Echo
+Ping Response => ICMP Type 0
+
+
+By default many firewalls block ICMP echo requests
+
+To use ICMP echo request to discover live hosts, add the option '-PE' and '-sn' (to not do port scanning)
+
+
+If the systems are in the same network we will get the MAC address of the system in the scan output, if we scan the network which is outside of our system then in the scan output there will be no MAC address of the systems(hosts)
+
+
+Nmap uses timestamp request (ICMP Type 13) and checks whether it will get a Timestamp reply (ICMP Type 14). Adding the -PP option tells Nmap to use ICMP timestamp requests.
+
+Nmap uses address mask queries (ICMP Type 17) and checks whether it gets an address mask reply (ICMP Type 18). This scan can be enabled with the option -PM
+
+ICMP timestamp -> -PP
+ICMP Address mask -> -PM
+ICMP Echo -> -PE
+
+
+=== Nmap host discovery using TCP & UDP
+
+-> TCP SYN ping
+we can send a packet with the SYN flag set to a TCP port, 80 by default and wait for response.
+An open port should reply with a SYN/ACK, a closed port would result in an RST.
+
+If you want Nmap to use TCP SYN ping, you can do so via the option -PS followed by the port number, range, list, or a combination of them. For example, `-PS21` will target port 21, while `-PS21-25` will target ports 21, 22, 23, 24, and 25. Finally `-PS80,443,8080` will target the three ports 80, 443, and 8080.
+
+flag: -PS
+
+If we dont mention any port number in the command, Nmap will consider the default port 80
+
+-> TCP ACK ping
+this sends a packet with an ACK flag set. You must be running Nmap as a privileged user to be able to accomplish this.
+
+flag: -PA
+
+
+-> UDP ping
+Contrary to TCP SYN ping, sending a UDP packet to an open port is not expected to lead to any reply. However, if we send a UDP packet to a closed UDP port, we expect to get an ICMP port unreachable packet; this indicates that the target system is up and available.
+
+flag: -PU
+
+
+=== Using Reverse DNS lookup
+Nmap’s default behaviour is to use reverse-DNS online hosts.
+
+flag: -n -> to skip this step
+flag: -R -> reverse DNS lookup on all hosts
+
+
+-----------
+
+No more than one service can listen on any TCP or UDP port on the same IP address
+
+Considering the scenario that port is open and running but firewall is blocking the packets, nmap considers the following six states
+1. Open -> service is listening on the specified port
+2. Closed -> no service is listening on the specified port, althrough the port isa ccessible
+3. Filtered -> nmap cannot determine if the port is open or closed because the port is not accessible, maybe firewall is blocking incoming/outgoing packets
+4. Unfiltered -> nmap cannot determine if the port is open or closed, although the port is accessible, this state is encountered when using an ACK scan '-sA'
+5. Open|Filtered -> nmap cannot determine whether the port is open or filtered
+6. Closed|Filtered -> nmap cannot deecide whether port is closed or filtered
+
+
+
+=== TCP header and Scans
+TCP header is the first 24 bytes of a TCP segment
+
+-> URG: Urgent flag indicates that the urgent pointer filed is significant. The urgent pointer indicates that the incoming data is urgent, and that a TCP segment with the URG flag set is processed immediately without consideration of having to wait on previously sent TCP segments.
+-> ACK: Acknowledgement flag indicates that the acknowledgement number is significant. It is used to acknowledge the receipt of a TCP segment.
+-> PSH: Push flag asking TCP to pass the data to the application promptly.
+-> RST: Reset flag is used to reset the connection. Another device, such as a firewall, might send it to tear a TCP connection. This flag is also used when data is sent to a host and there is no service on the receiving end to answer.
+-> SYN: Synchronize flag is used to initiate a TCP 3-way handshake and synchronize sequence numbers with the other host. The sequence number should be set randomly during TCP connection establishment.
+-> FIN: The sender has no more data to send.
+
+
+TCP connect scan works by completing the TCP 3-way handshake
+
+Unprivileged users are limited to connect scan
+
+TCP SYN scan is the default scan mode when running Nmap as a privileged user, running as root or using sudo, and it is a very reliable choice
+
+
+
+=== UDP scans
+UDP is a connectionless protocol, and hence it does not require any handshake for connection establishment.
+
+We cannot guarantee that a service listening on a UDP port would respond to our packets.
+
+if a UDP packet is sent to a closed port, an ICMP port unreachable error (type 3, code 3) is returned
+
+
+------------------
+==> TCP Null Scan
+-> this will not set any flags in TCP packet
+flag: -sN
+A TCP packet with no flags set will not trigger any response when it reaches an open port,
+
+Therefore, from Nmap’s perspective, a lack of reply in a null scan indicates that either the port is open or a firewall is blocking the packet.
+
+we expect the target server to respond with an RST packet if the port is closed
+
+
+==> TCP FIN Scan
+The FIN scan sends a TCP packet with the FIN flag set.
+flag: -sF
+no response will be sent if the TCP port is open
+the target system should respond with an RST if the port is closed
+
+==> TCP Xmas Scan
+An Xmas scan sets the FIN, PSH, and URG flags simultaneously
+flag: -sX
+Like the Null scan and FIN scan, if an RST packet is received, it means that the port is closed. Otherwise, it will be reported as open|filtered
+
+==> TCP Maimon Scan
+In this scan, the FIN and ACK bits are set
+The target should send an RST packet as a response.
+flag: -sM
+
+
+==> TCP ACK scan
+an ACK scan will send a TCP packet with the ACK flag set
+flag: -sA
+the target would respond to the ACK with RST regardless of the state of the port.
+This kind of scan would be helpful if there is a firewall in front of the target.
+
+
+==> Window scan
+The TCP window scan is almost the same as the ACK scan; however, it examines the TCP Window field of the RST packets returned.
+flag: -sW
+
+
+
+==> TCP Custom scan
+if you want to experiment with a new TCP flag combination beyond the built-in TCP scan types, you can do so using the `--scanflags`.
+
+=== Spoofing and Decoys
+in some network setups you will be able to scan a target system using a spoofed IP address and even a spoofed MAC address. 
+Such a scan is only beneficial in a situation where you can guarantee to capture the response.
+
+cmd: nmap -S <spoofedIP> <targetIP>
+
+the three steps in spoof scanning:
+1. Attacker sends a packet with a spoofed source IP address to target machine
+2. target machine replies to the spoofed IP address as the destination
+3. Attacker captures the replies to figure out open ports
+
+
+When you are on the same subnet as the target machine, you would be able to spoof your MAC address as well,
+flag: --spoof-mac <spoofedMAC>
+
+You can launch a decoy scan by specifying a specific or random IP address after -D
+cmd: nmap -D IP1,IP2,ME <targetIP>  => this will make the scan of <targetIP> appear as coming from the IP address <IP1>, <IP2> and your system (<ME>)
+
+
+=== Fragmented Packets
+-> Firewall
+
+-> IDS - Intrusion Detection System
+
+-> Fragmented Packets
+Nmap provides the option -f to fragment packets. Once chosen, the IP data will be divided into 8 bytes or less. Adding another -f (-f -f or -ff) will split the data into 16 byte-fragments instead of 8. You can change the default value by using the --mtu; however, you should always choose a multiple of 8.
+
+flag: -f
+
+if you prefer to increase the size of your packets to make them look innocuous, you can use the option --data-length NUM, where num specifies the number of bytes you want to append to your packets.
+
+
+=== Idle/Zombie Scan
+this requires an idle system connected to the network that you can communicate with.
+Nmap will make each probe appear as if coming from the zombie host, then it will check for indicators whether the idle (zombie) host received any response to the spoofed probe.
+This is done by checking the IP idendification value in the IP header.
+
+flag: -sI
+
+
+This scan requires 3 steps to discover whether port is open or not:
+1. Trigger the idle host to respond so that you can record the current IP ID on the idle host
+2. send an SYN packet to a TCP port on the target, the packet should be spoofed to appear as if it was coming from the idle host IP address
+3. Trigger the idle machine again to respond so that you can compare the new IP ID with the one received earlier
+
+
+----
+Providing the flag: `--reason` gives us the explicit reason why nmap concluded that the system is up or a particular port is open.
+
+
+
+--------------------
+
+=== Service Detection
+Once nmap discovers open ports, you can probe the available port to detect the running service.
+flag: -sV
+
+this flag will collect and determine service and version information for the open ports
+
+this will force nmap to proceed with the TCP 3-way handshake and establish the connection.
+
+stealth scan is not possible with this option. (-sS and -sV flags cannot be choosen at once)
+
+
+=== OS Detection and Traceroute
+Nmap can detect the OS based on its behaviour and any telltale signs in its response.
+flag: -O
+
+The OS detection is very convenient, but many factors might affect its accuracy. First and foremost, Nmap needs to find at least one open and one closed port on the target to make a reliable guess. Furthermore, the guest OS fingerprints might get distorted due to the rising use of virtualization and similar technologies. Therefore, always take the OS version with a grain of salt.
+
+
+Traceroute
+flag: --traceroute
+
+standard `traceroute` starts with a packet of low TTL and keeps increating until it reaches the target.
+Nmap's traceroute starts with a packet of high TTL and keeps decreasing it.
+
+
+=== Nmap Scripting Engine (NSE)
+Nmap scripts are written in Lua language
+Nmap default installation contains around 600 scripts installed in the default folder (`/usr/share/nmap/scripts`)
+
+we can choose to run the scripts in the default category using flag: `--script=default`
+available categories: 'default', 'auth', 'broadcast', 'brute','discovery','dos','exploit','external','fuzzer','intrusive','malware','safe','version','vuln'
+
+
+
+=== Saving the output
+the normal format is similar to the output you get on the screen when scanning a target. You can save your scan in normal format by using -oN FILENAME; N stands for normal
+flag: -oN
+
+
+flag: -oG -> to store output in greppable format
+
+flag: -oX -> to store output in xml format
+
+

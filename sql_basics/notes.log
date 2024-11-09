@@ -1,0 +1,152 @@
+Databses are an organized collection of structured information or data that is easily accessible and can be manipilated or analysed
+
+There are quite a few different types of databases that can be built, but the most common ones are relational databases and non-relational databases
+
+Relational Database:
+ store structured data, 
+ when a new entry is made into database this must follow the predefined structure of data
+ this data is stored in rows and columns in a table
+ relationships can be made between two or more tables
+
+
+Non-Relational Database:
+  store data in a non-tabular format
+
+
+Relational Database concepts(keywords)
+- Row
+- Column
+- Table
+- Primary Key
+- Foreign Key
+
+
+Databases are usually controlled by using a Database Management System (DBMS).
+Serving as an interfacce between the end user and the database, a DBMS is a software program that allows user to retrieve, update and manage the data being stored.
+
+SQL(Structured Query Language) is a programming language that can be used to query, define and manipulate the data stored in a relational database
+
+
+=== Database and Table statements
+
+-> Create database
+cmd: CREATE DATABASE <dbName>;
+
+-> show databases
+cmd: SHOW DATABASES;
+
+-> use database
+cmd: USE <dbName>;
+
+-> delete/drop database
+cmd: drop database <dbname>;
+
+-> create table
+cmd: create table <tableName> ( <column1Name> <columnDataType>, <col2Name> <col2DataType> );
+
+-> show tables
+cmd: show tables;
+
+-> describe
+if we want to know what columns are contained within a table (and the datatype), we can use this command)
+cmd: describe <table_name>
+
+-> alter table
+modify the table to add or remove columns
+cmd: alter table <tableName> ADD/REMOVE <columnName> <dataType>; (only include data if you are adding column)
+
+-> drop/delete table
+cmd: drop table <tableName>;
+
+
+=== CRUD Operations
+CRUD -> Create, Read, Update, Delete
+
+insert ->
+cmd: insert into <table> (col1, col2) values (val1, val2);
+
+read ->
+cmd: select <col1>, <col2> from <table>;
+
+update ->
+cmd: update <table> set <col> = <val> where <col> = <val>;
+
+delete ->
+cmd: delete from <table> where <col> = <val>;
+
+=== Clauses
+
+Clause is a part of statement that specifes the criteria of the data being manipulated, usually by an initial statement. Clauses can help us define the type of data and how it should be retrieved or sorted.
+
+clauses include: 'FROM', 'WHERE', 'DISTINCT', 'GROUP BY', 'ORDER BY', 'HAVING'
+
+-> DISTINCT Clause
+used to avoid duplicate records when doing a query, returning only unique values
+cmd: select distinct <col> from <table>;
+
+-> GROUP BY clause
+this clause aggregates data from multiple records and groups the query results in columns.
+cmd: select <col1>, COUNT(*) from <table> GROUP BY <col1>;
+
+in this example, the results are groupded by the result of the 'count' function.
+
+-> ORDER BY clause
+used to sort the records returned by a query in ascending or descending order
+cmd: select * from <table> order by <col> asc/desc;
+
+-> HAVING clause
+used with other clauses to filter groups or results of records based on a condition. 
+cmd: select <col1>, count(*) from <table> group by <col1> having <col1> like 'somepattern';
+
+
+=== Operators
+-> Logical Operators - which are boolean values, TRUE or FALSE
+
+-> LIKE operator
+filter the specific patterns within a column
+cmd: select * from table where col like 'somePattern';
+
+-> AND operator
+cmd: select * from table where col1 = some and col2 = someother;
+
+-> OR operator
+cmd: select * from table where col = some or col2 = someother;
+
+-> NOT operator
+cmd: select * from table where not col like 'somepattern';
+
+-> Between operator
+cmd: select * from table where col between 'somevalue' and 'othervalue';
+
+-> Comparision operators, (= equals, != not equals, < less than, > greater than, >= greater than, <= less than)
+
+=== Functions
+-> CONCAT() function
+used to add two or more string together, and also used to combine text from different columns
+cmd: select concat (col1, "blabhhh. ', col1, "other blan') as <output col Name> from table;
+
+-> GROUP_CONCAT() function
+function helps us to concatenate data from multiple rows into one field
+cmd: select category, GROUP_CONCAT(name separator ',') as colName from table group by col2Name;
+
+-> SUBSTRING() function
+will retrieve a substring within a query, starting at a determined position. the length of substring can also be specified.
+cmd: select substring(date, 1, 4) as colheaderName from table;
+
+-> LENGTH() function
+return the number of characters in a string, this includes spaces and punctuation
+cmd: select length(col) as colHeaderName from table;
+
+-> COUNT() function
+cmd: select count(*) as colHeaderName from table;
+
+-> SUM() function
+cmd: select sum(col) as colHeaderName from table;
+
+-> MAX() function
+cmd: select MAX(col) as colHeaderName from table;
+
+-> MIN() function
+cmd: select MIN(col) as colHeaderName from table;
+
+

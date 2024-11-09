@@ -1,0 +1,74 @@
+whois -> query whois servers
+nslookup -> query dns servers
+dig -> query dns servers
+
+
+whois records and dns records are publicly available records and hence do not alert the target
+
+
+=============== Passive vs Active Recon
+Reconnaissance (recon) can be defined as a preliminary survey to gather information about the target
+
+=====> Passive Recon
+Attacker rely on publicly available information without directly engaging with the target.
+It may include activities like:
+1. Looking DNS records of a domain
+2. Checking job ads for tech stack and some extra information
+3. News/updated information about what and how the target is working
+
+
+
+=====> Actice Recon
+Attacker engaging with the target.
+Some of the examples include:
+1. Connecting to one of the target servers such as HTTP, FTP, SMTP
+2. Social Engineering
+3. Entering target premises pretending to be repairman
+
+
+
+========================== Passive Recon
+
+=============== Whois
+WHOIS is a request-response protocol that follows RFC-3912 specification.
+
+WHOIS server listens on TCP port 43 for incoming requests. The domain registrar is responsible for maintaining the WHOIS records for the domain names its leasing.
+
+cmd: whois <domainName>
+
+
+=============== nslookup & dig
+to find the IP address of the domain name, we use 'nslookup' command,
+
+cmd: nslookup <options> <domainName> <server>
+
+options - options for command
+domainName - target domain
+server - dns server that you want to query
+
+for more advanced DNS queries and additional functionalities, we can use 'dig' command which is acronym for 'Domain Information Groper' 
+
+cmd: dig @<server> <domainName> <DNSRecordType>
+
+
+
+=============== DNSDumpster
+DNS lookup tools (nslookup and dig) cannot find subdomain on their own
+
+DNSDumpster - finds all the subdomains of a target and its related IP information and DNS information
+
+website: dnsdumpster[.]com
+
+
+=============== Shodan[.]io
+When you are tasked to run a penetration test against specific targets, as part of the passive reconnaissance phase, a service like Shodan.io can be helpful to learn various pieces of information about the client’s network, without actively connecting to it.
+
+Shodan[.]io tries to connect to every device reachable online to build a search engine of connected things in contrast with a search engine for web pages. Once it gets a response, it collects all the information related to the service and saves it in the database to make it searchable.
+
+
+
+
+
+======================== Active Recon
+
+===== Web Browser

@@ -1,0 +1,40 @@
+=== TELNET
+application layer protocol
+Using Telnet, a user can log into another computer and access its terminal (console) to run programs, start batch processes, and perform system administration tasks remotely.
+
+unencrypted connection
+
+default port is 23
+
+
+=== Simple Mail Transfer Protocol (SMTP)
+Email delivery over the internet requires the following components:
+1. Mail Submission Agent (MSA)
+2. Mail Transfer Agent (MTA)
+3. Mail Delivery Agent (MDA)
+4. Mail User Agent (MUA)
+
+
+MUA (an email client) has email to send -> MUA connects to a MSA to send its message -> MSA checks for any errors before transmitting to MTA -> MTA will send email msg to MTA of receipent -> a typical setup would have the MTA server also functioning as a MDA -> MDA sends email to receipent user
+
+SMTP uses cleartext, where all commands are sent without encryption,
+
+default port: 25
+
+
+=== Post Office Protocol 3 (POP3)
+
+used to download email messages from a Mail Delivery Agent (MDA) server.
+the mail client connects to the POP3 server, authenticates, downloads the new email messages before (optionally) deleting them
+
+default port: 110
+
+
+=== Internet Message Access Protocol (IMAP)
+More sophisticated than POP3
+tool behind keeping email synchronized across multiple devices
+default port: 143
+
+IMAP requires each command to be preceded by a random string to be able to track the reply
+
+

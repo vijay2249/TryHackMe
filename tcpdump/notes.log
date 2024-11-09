@@ -1,0 +1,24 @@
+Tcpdump tool and its 'libpcap' library are written in C and C++ and were released on Unix like systems
+
+
+while using tcpdump we can specify which network interface to listen to using '-i' flag, we can listen to all interfaces via 'any' value to -i flag
+
+-w <file> -> save the output to a file (the common notation for file extension is .txt )
+-r <file> -> read the data from file
+-c <count> -> number of packets to capture 
+
+Tcpdump will resolve IP addresses and print friendly domain names where possible.
+
+To avoid making such DNS lookups, you can use the -n argument
+we can use -nn argument - to avoid resolving both DNS and port numbers
+
+You can easily limit the captured packets to this host using host IP or host HOSTNAME
+
+It is important to note that capturing packets requires you to be logged-in as root or to use sudo.
+
+
+If you want to limit the packets to those from a particular source IP address or hostname, you must use 'src host IP' or 'src host HOSTNAME'. Similarly, you can limit packets to those sent to a specific destination using 'dst host IP' or 'dst host HOSTNAME'.
+
+If you want to capture all DNS traffic, you can limit the captured packets to those on 'port 53'
+
+

@@ -1,0 +1,17 @@
+#1
+parent library of tcpdump ==> libpcap
+
+#2
+to display IP address of host ==> use '-n' flag
+
+#3
+1. tcpdump -r traffic.pcap icmp | wc ==> 26
+2. tcpdump -r traffic.pcap dst host 192.168.124.137 ==> 192.168.124.148
+3. tcpdump -r traffic.pcap dst port 53 ==> mirrors.rockylinux.org
+
+#4
+1. tcpdump -r traffic.pcap "tcp[tcpflags] == tcp-rst" | wc ==> 57
+2. tcpdump -r traffic.pcap greater 15000 -n ==> 185.117.80.53
+
+#5
+1. tcpdump -r traffic.pcap arp -e ==> 52:54:00:7c:d3:5b

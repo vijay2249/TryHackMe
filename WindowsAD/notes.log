@@ -1,0 +1,63 @@
+Active Directory - AD
+
+Domain Controller - the server that run the active directory services
+
+
+==> Active Directory
+The core of any Windows Domain is the Active Directory Domain Service (AD DS).
+
+This service acts as a catalogue that holds the information of all of the "objects" that exist on your network.
+
+-> Users
+Users are one of the most common object types in Active Directory. 
+Users are one of the objects known as security principals,
+
+-> Machines
+Machines are another type of object within Active Directory; for every computer that joins the Active Directory domain, a machine object will be created. 
+ The machine accounts themselves are local administrators on the assigned computer, they are generally not supposed to be accessed by anyone except the computer itself, but as with any other account, if you have the password, you can use it to log in.
+
+Identifying machine accounts is relatively easy. They follow a specific naming scheme. The machine account name is the computer's name followed by a dollar sign. For example, a machine named DC01 will have a machine account called DC01$.
+
+
+-> Security Groups
+Security groups are also considered security principals and, therefore, can have privileges over resources on the network.
+
+Groups can have both users and machines as members. If needed, groups can include other groups as well.
+
+Security Group -> Description
+Domain Admins  -> Users of this group have administrative privileges over the entire domain. By default, they can administer any computer on the domain, including the DCs.
+Server Operators  ->  Users in this group can administer Domain Controllers. They cannot change any administrative group memberships.
+Backup Operators  ->  Users in this group are allowed to access any file, ignoring their permissions. They are used to perform backups of data on computers.
+Account Operators  ->  Users in this group can create or modify other accounts in the domain.
+Domain Users	Includes all existing user accounts in the domain.
+Domain Computers  ->   Includes all existing computers in the domain.
+Domain Controllers  ->  Includes all existing DCs on the domain.
+
+
+=> Managing Users in AD
+Before deleting any OU we also have an options to disable any accidental deletion of OU, this can be found in properties of OU
+
+One of the nice things you can do in AD is to give specific users some control over some OUs. This process is known as delegation and allows you to grant users specific privileges to perform advanced tasks on OUs without needing a Domain Administrator to step in.
+
+
+
+===> Group Policies
+
+Windows manages such policies through Group Policy Objects (GPO). GPOs are simply a collection of settings that can be applied to OUs. GPOs can contain policies aimed at either users or computers, allowing you to set a baseline on specific machines and identities.
+
+To configure GPOs, you can use the Group Policy Management tool
+
+
+==> Authentication Methods
+When using Windows domains, all credentials are stored in the Domain Controllers. Whenever a user tries to authenticate to a service using domain credentials, the service will need to ask the Domain Controller to verify if they are correct.
+
+Two protocols can be used for network authentication in windows domains:
+1. Kerberos -> current software for authentication
+2. NetNTLM -> legacy software
+
+
+-> Kerberos Authentication
+Kerberos authentication is the default authentication protocol for any recent version of Windows. Users who log into a service using Kerberos will be assigned tickets. Think of tickets as proof of a previous authentication. Users with tickets can present them to a service to demonstrate they have already authenticated into the network before and are therefore enabled to use it.
+
+
+===> Trees, Forests and Trusts
