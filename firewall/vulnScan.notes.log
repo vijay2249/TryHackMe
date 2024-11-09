@@ -1,0 +1,39 @@
+Vulnerability scanning is the inspection of digital systems to find weakness.
+
+Type of vuln scan:
+1. Authenticated Scans
+- The credentials of the subject host must be provided to the vulnerability scanner
+- Identifies the vulnerabilities that can be exploited by the attackers having access to the host.
+- It provides a deeper visibility into the target system by scanning its configuration and installed applications.
+2. Unauthenticated scans
+- The vulnerability scanner does not require the host’s credentials; it only needs the IP address.
+- Identifies the vulnerabilities that can be exploited by an external attacker having no access to the subject host.
+- It is less resource-intensive and straightforward to set up.
+
+1. Internal Scan
+- Conducted from inside the network.
+- It focuses on the vulnerabilities that can be exploited inside the network.
+- Identifies vulnerabilities that would be exposed to the attackers once they get inside the network.
+2. External Scan
+- Conducted from outside the network.
+- It focuses on the vulnerabilities that can be exploited from outside the network.
+- Identifies the vulnerabilities exposed to the attacker from outside the network.
+
+
+== Tools
+1. Nessus 
+2. Qualys
+3. Nexpose
+4. OpenVAS(Open Vulnerability Assessment System)
+
+
+CVE -> Common Vulnerabilities and Exposures
+CVSS -> Common Vulnerability Scoring System
+
+
+
+=== OpenVAS
+install cmd: 
+	sudo apt install docker.io
+	sudo docker run -d -p 443:443 -name openvas mikesplain/openvas
+once this is done we can acess the login page in https://127.0.0.1 ip

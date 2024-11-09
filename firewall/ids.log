@@ -1,0 +1,21 @@
+IDS - Intrusion Detection System
+
+It only alerts the security system about the malicious activity but doesn't do anything to stop it.
+
+
+IDS deployment modes
+1. Host Intrusion detection system (HIDS)
+- installed individually on the hosts and are responsible for only detecting potential security threats associated with that particular host.
+- provide detailed visibility of the hosts activities.
+- these are resource intensive and require management on each host
+
+2. Network intrusion detection system (NIDS)
+- detect malicious activities within the whole network regardless of any specific hosts. 
+- provides a centralized view of all the detections inside the whole network.
+
+-> Detection Modes
+1. Signature based IDS
+2. Anomaly based IDS
+3. Hybrid IDS
+
+

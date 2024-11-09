@@ -1,0 +1,46 @@
+CAPA = Common Analysis Platform for Artifacts
+Tool developed by FireEye Mandiant team.
+
+Designed to identify the capabilities present in the executable files like portable executables (PE), ELF binaries, .NET modules etc...
+
+cmd: capa.exe <binFilePath>
+
+
+=== Dissecting CAPA results: General Information, MITRE and MAEC
+
+The first block contains basic information about the file such as:
+1. cryptographic algorithms such as 'md5' and 'sha1/256'
+2. the 'static' field tells us how CAPA performed its analysis on the file
+3. the 'os' field reveals the OS context for which the identified capabilities apply
+4. 'arch' field allows us to determine whether we are dealing with a binary related to x86 architecture
+5. 'path; where the analyzed file is located.
+
+
+The next section, CAPA uses MITRE framework to explain the attack tactic and technique of the paylaod or malware
+
+-> MAEC - Malware Attribute Enumeration and Characterization
+a specialized language designed to encode and communicate complex details concerning malware.
+it contains an extesive range of attributes including behaviours, artifacts, and interconnections among various instances of malware.
+
+
+-> Malware Behavior Catalogue (MBC)
+MBC is designed to support various aspects of malware analysis, such as labelling, similarity analysis, and standardized reporting
+it serves as a catalogue of malware objectives and behaviours.
+
+
+-> Objective
+These are based on ATT&CK tactics in the context of malware behaviour, though not all are included,
+MBC has anti-behavioral and anti-static analysis. These objectives are tailored for malware analysis with the use case of characterizing malware.
+
+-> Micro-Objective
+Are associated with micro-behaviours which refer to an action or actions exhibited by potentially malicious software that isnt necessarily malicious and may serve various objectives.
+The final output of CAPA, Objective, and Micro-Objective are shown only under the Objective column.
+
+
+-> MBC Behaviors
+The column MBC Behaviors contains behaviours and Micro-behaviors with our without its methods and identifiers. 
+
+-> Methods
+Methods are tied to behaviors
+
+

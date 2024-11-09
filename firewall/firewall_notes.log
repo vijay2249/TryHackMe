@@ -1,0 +1,65 @@
+Stateless Firewalls:
+- operate on layer 3 and layer 4 of the OSI model and works solely by filtering the data based on predetermined rules without taking note of the state of the previous connections.
+- it maintains no information on the state of the previous connections to make decisions for future packets. by which they can process packets quickly
+
+
+Stateful Firewalls:
+- goes beyond filtering the packets by predermined rules. It also keeps track of previous connections and stores them in a state table. 
+- These operate on later 3 and layer 4 of OSI model
+- if it accepts a few packets from a source address based on its rules, in that case it will take note of the connection in its stated table and allow the future packets for this connection automatically get allowed without inspecting each of them. Similarly it dones the same for rejected connection too
+
+
+Stateless and Stateful firewalls cant inspect the contents of a packet.
+
+Proxy Firewalls:
+- Proxy firewalls or application-level gateways act as intermediate between the private network and the internet and operate on the later 7 of OSI model.
+- Inspect the content of all packets
+- requests made by users in a network are forwarded by this proxy after inspection and masking with their own IP address to provide anonymity for the internal IP address.
+- content filtering policies can be applied to these firewalls to allow/deny incoming and outgoing traffic based on their content.
+
+
+Next Generation Firewall(NGFW)
+- operates from layer 3 to layer 7 of OSI model, offering deep packet inspection and other functionalities that enhance the security of incoming and outgoing network traffic.
+- has an intrusion prevention system that blocks malicious activities in real time. 
+- offers heuristic analysis by analyzing the pattern of attacks and blocking them instantly before reaching the betwork.
+- have SSL/TLS decryption capabilities, which inspect the packets after decrypting then and correlate the data with the threat intelligence feeds to make efficient decisions.
+
+
+
+===Rules in Firewalls:
+
+basic components of a firewalls rules:
+1. Source address
+2. Destination address
+3. Port
+4. Protocol
+5. Action - allow/deny/forward
+6. Direction - inbound/outbound/forward
+
+
+=== Windows Defender Firewall
+Windows defender is build in firewall introduced by microsoft in the windows os. this firewall contains all the basic functionality for creating, allowing or denying specific program or creating customized rules.
+
+-> Network Profiles
+There are 2 available network profiles, Windows firewall determines your current network based on the network location awareness (NLA) and applies that profile fireall setting 
+
+We can have different firewall settings for each of them
+1. Private Networks - includes the firewall configs to apply when connected to home network
+2. Guest or public networks - includes the firewall configurations to apply when connected to a public or untrusted network like coffee shops, restaurents etcc.
+
+Windows Defender Firewall is turned on by default.
+
+
+=== Linux iptables firewall
+-> Netfilter
+- it is the framework insude the linux os with core firewall functionalities, including packet filtering, NAT and connection tracking. 
+- serves as foundation for various firewall utilities available in linux to control network traffic.
+1. iptables -> most widely used utility in many linux distros
+2. nftables -> successor to the 'iptables' utility with enhanced packet filtering and NAT capabilities.
+3. firewalld -> also operates on the netfilter framework and has predefined rule sets. works differently from the others and come with different pre-build network zone configurations.
+
+-> ufw
+- uncomplicated firewall (ufw), eliminates the complications of making rules in a complex syntax in 'iptables' by giving an easier interface.
+
+cmd: ufw default deny outgoing
+cmd: ufw denny 22/tcp
