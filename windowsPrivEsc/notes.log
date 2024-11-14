@@ -1,0 +1,262 @@
+Privilege Escalation vectors:
+1. Misconfigurations on windows services or schedules tasks
+2. Excessive privileges assigned to user account
+3. Vulnerable software
+4. Missing windows security patches
+
+
+
+=== Windows Users
+Windows system have two kinds of users, depending on their access levels,
+1. Administrators
+  - Users have most privilege, they can change any system configuration parameter and access any file in the system
+2. Standard Users
+  - users can access the system but can only perfor limited tasks. 
+  - users cannot make permanent or essential changes to the system and are limited to their files
+
+
+Any user with admin privileges will be part of "Administrators" group. and others are part of "Users" group.
+
+
+Built-in special accounts used by windows OS
+1. SYSTEM / LocalSyste
+  - used by os to perform internal tasks
+  - has full access to all files and resources available on the host with even higher privileges than administrators
+2. Local Service
+  - default account to run windows services with 'minimum' privileges.
+  - it uses anonymous connections over the network
+3. Network Service
+  - Default account to run windows services with 'minimum' privileges
+  - use computer credentials to authenticate through network
+
+
+These 3 accounts are created and managed by windows 
+
+
+=====================================================================
+============================= Attack Vectors ========================
+=====================================================================
+
+=== Harvesting passwords from usual spots
+
+==> Unattended Windows Installations
+When installing windows on a large number of hosts, admins may use windows deployment services, which allows for a single OS image to be deployed to several hosts through the network
+These kinds of installations are referred to as unattended installations as they dont require user interaction.
+Such installations require the use of an administrator account to perform the initial setup, which might end up being stored in the machine in the following locations:
+1. C:\Unattended.xml
+2. C:\Windows\Panther\Unattend.xml
+3. C:\Windows\Panther\Unattend\Unattend.xml
+4. C:\Windows\system32\sysprep.inf
+5. C:\Windows\system32\sysprep\sysprep.xml
+
+
+==> Powershell History
+Powershell commands are stored in a file in location `%userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt`
+
+in cmd.exe the cmd: %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
+in powershell : $Env:userprofile\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
+
+
+==> Saved Windwos Credentials
+Windows allows user to use other users credentials. THis function also gives the option to sve the creds on the system.
+
+cmd: cmdkey /list ==> list saved credentials
+with this command we cant see the saved passwords
+
+We can use the `runas` command with `/savecred` option to execute commands as other user
+cmd: runas /savecred /user:admin cmd.exe ==> run cmd.exe as admin user and take creds from saved creds space
+
+
+==> IIS configuration
+Internet Information Service(IIS) is the default web server on windows installations. The config of websites on IIS is stored in a file `web.config` and can store passwords for databases or configured authentication mechanisms.
+
+Depending on the installed version of IIS, we can find web.config in on of the following locations:
+1. C:\inetpub\wwwroot\web.config
+2. C:\Windows\Microsoft.NET\Framework64\vx.x.x.x\Config\web.config
+
+Example:
+find database connection url, creds
+cmd: more C:\Windows\Microsoft.NET\Framework64\vx.x.x\Config\web.config | findstr connectionString
+
+
+==>Retrieve Credentials from Software: Putty
+PuTTY is an SSH client for windows systems.
+Instead of having to specify a connection parameters every single time, users can store sessions where the IP, user and other configurations can be stored for later use.
+
+PuTTY wont allow to store SSH passwords, but it will store proxy configurations that include clear text authentication credentials
+
+To retrieve the stored proxy credentials, you can search under the following registry key for ProxyPassword with the following command:
+cmd: reg query HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\Sessions\ /f "Proxy" /s
+
+
+==> Scheduled Tasks
+Scheduled tasks can be listed form the command line using command: `schtasks` withtout any options
+
+To get detailed information about any of the services, run the command:
+cmd: schtasks /query /tn <taskName> /fo list /v
+
+check file permissions:
+cmd: icacls <filePath>
+
+
+==> AlwaysInstallElevated
+Windows installer files (.msi files) are used to install applications on the system.
+They usually run with the privilege level of the user that starts it. However, these can be configured to run with higher privileges from any user account.
+
+This method requires two registry values to be set.
+cmd: reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer
+cmd: reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer
+
+
+
+=== Abusing Service Misconfigurations
+
+==> Windows Services
+Windows services are managed by the "Service Control Manager (SCM)" 
+This is in charge of managing the state of services as needed, checking the current status of any status of any service and generally providing a way to configure services
+
+Each service on a Windows machine will have an associated executable which will be run by the SCM whenever a service is started.
+It is important to note that service executables implement special functions to be able to communicate with the SCM, and therefore not any executable can be started as a service successfully. Each service also specifies the user account under which the service will run.
+
+Services have a Discretionary Access Control List (DACL), which indicates who has permissions to start, stop, pause, query status, query configuration or reconfigure the service, amongst other privileges. The DACL can be seen form process hacker
+
+All of the services configurations are stored on the registry under `HKLM\SYSTEM\CurrentControlSet\Services\`
+
+A subkey exists for every service in the system. Again, we can see the associated executable on the ImagePath value and the account used to start the service on the ObjectName value. If a DACL has been configured for the service, it will be stored in a subkey called Security. As you have guessed by now, only administrators can modify such registry entries by default.
+
+
+==> Insecure Permissions on Service Executable
+If the executable associated with a service has weak permissions that allow an attacker to modify or replace it, the attacker can gain the privileges of the service's account trivially
+
+Get the service details
+check the file permissions
+
+Based on write permissions do generate reverse shell payload and download this payload into target system and provide necessary permissions to this file
+
+
+Note: Be sure to check the alias commands as well when running commands in powershell or in command prompt
+
+
+==> Unquoted Service Paths
+When we cant directly write into service executables as previous attack vector, there might still be chance to force a service into running arbitary executables by using a rather obscure feature
+
+Usually, when you send a command, spaces are used as argument separators unless they are part of a quoted string.
+
+If there are spaces between the command and they are not in quotes then the SCM will consider that till first space is an executable if it cant find any then it consider the second part also and try to find that executable
+
+But generally most of the service executables are written in `C:\Program Files` or `C:\Program Files (x86)` folder which are not writable for unprivileged users.
+
+Generate a payload and send it to target system
+And check which services are misconfigured related to quotes and spaces in path. if any spaces then check if that particular path service executable exists or not. if not hola, if yes check someother service.
+
+==> Insecure Service Permissions
+To check for a service DACL from the command line, we can use `Accesschk` from the sysinternals suite
+
+-> download payload -> grant permissions to all -> change service binpath -> restart the service
+
+
+
+=== Abusing dangerous Privileges
+==> Windows Privileges
+Each user has a set of assigned privileges that can be checked with the command
+cmd: whoami /priv
+
+resources: https://github.com/gtworek/Priv2Admin
+
+
+==> SeBackup / SeRestore
+The SeBackup and SeRestore privileges allow users to read and write to any file in the system, ignoring any DACL in place. The idea behind this privilege is to allow certain users to perform backups from a system without requiring full administrative privileges.
+
+use impacket library to upload files from target system to windows public smb share
+
+use impacket library to dump the NTLM credentials of the target system (make sure to provide the path to .hive files in the arguments)
+
+use the hashes to perform the pass-the-hash attack and gain the access to the target system with SYSTEM privileges.
+
+
+==> SeTakeOwnership
+This privilege allows user to take ownership of any object on the system, including files and registry keys
+
+`Utilman` is the built-in windows application used to provide ease of access options during the lock screen.
+This program runs with SYSTEM privileges, so if we replace the original binary, we will be able to get SYSTEM privileges 
+
+Follow the process:
+1. take ownership of th utilmal
+	cmd: takeown /f C:\Windows\System32\Utilman.exe
+
+2. Add necessary permissions to current user
+	cmd: icacls C:\Windows\System32\Utilman.exe /grant <UserName>:F
+
+3. Replace utilman.exe with malware 
+	cmd: copy <malware> <utilman.exe Path>
+
+Now lock the system and try to click on 'ease of access' option and you can see terminal with system privileges is opened
+
+
+==> SeImpersonate / SeAssignPrimaryToken
+These privileges allows a process to impersonate other users and act on their behalf. 
+Impersonation usually consists of being able to spawn a process or thread under the security context of another user
+
+As an attacker, if we manage to take control of a process that uses authorized user token to perform actions on their behalf which is basically tacking control of a process with `SeImpersonate` or `SeAssignPrimaryToken` privileges, we can impersonate any user connecting and authenticating to that process.
+
+
+In windows system, `LOCAL SERVICE` and `NETWORK SERVICE ACCOUNTS` have such privilges as mentioned above.
+Internet Information Services (IIS) will also create a similar default account called "iis apppool\defaultapppool" for web applications.
+
+
+To elevate privileges using such accounts, an attacker needs to follow the process
+1. Spawn a process so that users can connect and authenticate to it for impersonation to occur
+2. Find a way to force privileges users to connect and authenticate to the spawned malicious process
+
+A known exploit for this vulnerability is "RogueWinRM"
+
+
+The RogueWinRM exploit is possible because whenever a user (including unprivileged users) starts the BITS service in Windows, it automatically creates a connection to port 5985 using SYSTEM privileges. Port 5985 is typically used for the WinRM service, which is simply a port that exposes a Powershell console to be used remotely through the network.
+
+
+
+=== Abusing vulnerable software
+
+==> Unpatched software
+Software installed on the target system can present various privilege escalation opportunities.
+
+We can use `wmic` command tool to list softwares and its versions installed on the target system
+
+cmd: wmic product get name,version,vendor => dump info about installed softwares and versions
+
+
+check software related vulnerabilities and try to execute them
+
+
+===Tools of the Trade
+
+==> WinPEAS
+script developed to enumerate the target system to uncover privilege escalation paths.
+resource: https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS
+
+==> PrivescCheck
+Powershell script that searches common privilege escalation on the target system. alternate to WinPEAS without requiring the execution of a binary file
+resource: https://github.com/itm4n/PrivescCheck
+
+Note: to run PrivescCheck on target system, we may need to bypass execution policy restrictions with the command
+cmd: Set-ExecutionPolicy Bypass -Scope process -Force
+
+
+==> WES-NG: Windows Exploit Suggester Next Generation
+Some exploit suggesting scripts can be detected by anti-virus software and might delete them such as WinPEAS
+To avoid making unnecessary noise that can attract attention, for these scenarios we can use this script
+
+resource: https://github.com/bitsadmin/wesng
+
+to use this script, we need to run it as `wes.py systeminfo.txt`
+
+
+
+Additional Resources:
+https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md
+
+https://github.com/gtworek/Priv2Admin
+https://github.com/antonioCoco/RogueWinRM
+https://jlajara.gitlab.io/others/2020/11/22/Potatoes_Windows_Privesc.html
+https://dl.packetstormsecurity.net/papers/presentations/TokenKidnapping.pdf
+https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation
